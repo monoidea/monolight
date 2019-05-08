@@ -85,6 +85,7 @@ monolight_window_class_init(MonolightWindowClass *window)
 void
 monolight_window_init(MonolightWindow *window)
 {
+  //TODO:JK: implement me
 }
 
 void
