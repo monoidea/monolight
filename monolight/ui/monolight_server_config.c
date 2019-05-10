@@ -19,6 +19,9 @@
 
 #include <monolight/ui/monolight_server_config.h>
 
+#include <ags/libags.h>
+#include <ags/libags-audio.h>
+
 #include <monolight/i18n.h>
 
 void monolight_server_config_class_init(MonolightServerConfigClass *server_config);
@@ -85,7 +88,98 @@ monolight_server_config_class_init(MonolightServerConfigClass *server_config)
 void
 monolight_server_config_init(MonolightServerConfig *server_config)
 {
-  //TODO:JK: implement me
+  GtkTable *table;
+  GtkLabel *label;
+
+  gchar *str;
+  
+  table = gtk_table_new(4,
+			2,
+			TRUE);
+  gtk_box_pack_start((GtkBox *) server_config,
+		     (GtkWidget *) table,
+		     FALSE, FALSE,
+		     0);
+  
+  /* IPv4 */
+  label = gtk_label_new(i18n("OSC server IPv4"));
+  gtk_table_attach(table,
+		   label,
+		   0, 1,
+		   0, 1,
+		   GTK_FILL|GTK_EXPAND, GTK_FILL|GTK_EXPAND,
+		   0, 0);
+  
+  server_config->osc_server_ip4 = gtk_entry_new();
+  gtk_entry_set_text(server_config->osc_server_ip4,
+		     AGS_OSC_CLIENT_DEFAULT_INET4_ADDRESS);
+  gtk_table_attach(table,
+		   server_config->osc_server_ip4,
+		   1, 2,
+		   0, 1,
+		   GTK_FILL|GTK_EXPAND, GTK_FILL|GTK_EXPAND,
+		   0, 0);
+  
+  /* IPv6 */
+  label = gtk_label_new(i18n("OSC server IPv6"));
+  gtk_table_attach(table,
+		   label,
+		   0, 1,
+		   1, 2,
+		   GTK_FILL|GTK_EXPAND, GTK_FILL|GTK_EXPAND,
+		   0, 0);
+  
+  server_config->osc_server_ip6 = gtk_entry_new();
+  gtk_entry_set_text(server_config->osc_server_ip6,
+		     AGS_OSC_CLIENT_DEFAULT_INET6_ADDRESS);
+  gtk_table_attach(table,
+		   server_config->osc_server_ip6,
+		   1, 2,
+		   1, 2,
+		   GTK_FILL|GTK_EXPAND, GTK_FILL|GTK_EXPAND,
+		   0, 0);
+  
+  /* domain */
+  label = gtk_label_new(i18n("OSC server domain"));
+  gtk_table_attach(table,
+		   label,
+		   0, 1,
+		   2, 3,
+		   GTK_FILL|GTK_EXPAND, GTK_FILL|GTK_EXPAND,
+		   0, 0);
+  
+  server_config->osc_server_domain = gtk_entry_new();
+  gtk_entry_set_text(server_config->osc_server_domain,
+		     AGS_OSC_CLIENT_DEFAULT_DOMAIN);
+  gtk_table_attach(table,
+		   server_config->osc_server_domain,
+		   1, 2,
+		   2, 3,
+		   GTK_FILL|GTK_EXPAND, GTK_FILL|GTK_EXPAND,
+		   0, 0);
+  
+  /* port */
+  label = gtk_label_new(i18n("OSC server port"));
+  gtk_table_attach(table,
+		   label,
+		   0, 1,
+		   3, 4,
+		   GTK_FILL|GTK_EXPAND, GTK_FILL|GTK_EXPAND,
+		   0, 0);
+
+  str = g_strdup_printf("%d", AGS_OSC_CLIENT_DEFAULT_SERVER_PORT);
+  
+  server_config->osc_server_port = gtk_entry_new();
+  gtk_entry_set_text(server_config->osc_server_port,
+		     str);
+  gtk_table_attach(table,
+		   server_config->osc_server_port,
+		   1, 2,
+		   3, 4,
+		   GTK_FILL|GTK_EXPAND, GTK_FILL|GTK_EXPAND,
+		   0, 0);
+
+  g_free(str);
 }
 
 void

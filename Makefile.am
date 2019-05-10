@@ -49,23 +49,23 @@ libmonolight_la_HEADERS_0 = $(libmonolight_ui_h_sources)
 libmonolight_la_SOURCES = $(libmonolight_la_HEADERS_0) $(libmonolight_ui_c_sources)
 
 # library libmonolight
-libmonolight_la_CFLAGS = $(CFLAGS) $(COMPILER_FLAGS) $(WARN_FLAGS) -I./ -I/usr/include $(GOBJECT_CFLAGS) $(GDKPIXBUF_CFLAGS) $(CAIRO_CFLAGS) $(GTK_CFLAGS)
+libmonolight_la_CFLAGS = $(CFLAGS) $(COMPILER_FLAGS) $(WARN_FLAGS) -I./ -I/usr/include $(GOBJECT_CFLAGS) $(GDKPIXBUF_CFLAGS) $(CAIRO_CFLAGS) $(GTK_CFLAGS) $(LIBAGS_CFLAGS) $(LIBAGS_AUDIO_CFLAGS)
 libmonolight_la_LDFLAGS = $(LDFLAGS) -version-info 1:0:0 -shared -fPIC -Wl,-soname,libmonolight.so -pthread
-libmonolight_la_LIBADD = -ldl -lm $(GOBJECT_LIBS) $(GDKPIXBUF_LIBS) $(CAIRO_LIBS) $(GTK_LIBS)
+libmonolight_la_LIBADD = -ldl -lm $(GOBJECT_LIBS) $(GDKPIXBUF_LIBS) $(CAIRO_LIBS) $(GTK_LIBS) $(LIBAGS_LIBS) $(LIBAGS_AUDIO_LIBS)
 
 # monolight-test
 monolight_test_SOURCES = $(monolight_testheaders) $(monolight_test_c_sources)
 
-monolight_test_CFLAGS += $(COMPILER_FLAGS) $(WARN_FLAGS) -I./ -I/usr/include $(GOBJECT_CFLAGS) $(GDKPIXBUF_CFLAGS) $(CAIRO_CFLAGS) $(GTK_CFLAGS)
+monolight_test_CFLAGS += $(COMPILER_FLAGS) $(WARN_FLAGS) -I./ -I/usr/include $(GOBJECT_CFLAGS) $(GDKPIXBUF_CFLAGS) $(CAIRO_CFLAGS) $(GTK_CFLAGS) $(LIBAGS_CFLAGS) $(LIBAGS_AUDIO_CFLAGS)
 monolight_test_LDFLAGS += -pthread
-monolight_test_LDADD = libmonolight.la -ldl -lm $(GOBJECT_LIBS) $(GDKPIXBUF_LIBS) $(CAIRO_LIBS) $(GTK_LIBS)
+monolight_test_LDADD = libmonolight.la -ldl -lm $(GOBJECT_LIBS) $(GDKPIXBUF_LIBS) $(CAIRO_LIBS) $(GTK_LIBS) $(LIBAGS_LIBS) $(LIBAGS_AUDIO_LIBS)
 
 # monolight-led
 monolight_led_SOURCES = $(monolight_ledheaders) $(monolight_led_c_sources)
 
-monolight_led_CFLAGS += $(COMPILER_FLAGS) $(WARN_FLAGS) -I./ -I/usr/include $(GOBJECT_CFLAGS) $(GDKPIXBUF_CFLAGS) $(CAIRO_CFLAGS) $(GTK_CFLAGS)
+monolight_led_CFLAGS += $(COMPILER_FLAGS) $(WARN_FLAGS) -I./ -I/usr/include $(GOBJECT_CFLAGS) $(GDKPIXBUF_CFLAGS) $(CAIRO_CFLAGS) $(GTK_CFLAGS) $(LIBAGS_CFLAGS) $(LIBAGS_AUDIO_CFLAGS)
 monolight_led_LDFLAGS += -pthread
-monolight_led_LDADD = libmonolight.la -ldl -lm $(GOBJECT_LIBS) $(GDKPIXBUF_LIBS) $(CAIRO_LIBS) $(GTK_LIBS)
+monolight_led_LDADD = libmonolight.la -ldl -lm $(GOBJECT_LIBS) $(GDKPIXBUF_LIBS) $(CAIRO_LIBS) $(GTK_LIBS) $(LIBAGS_LIBS) $(LIBAGS_AUDIO_LIBS)
 
 # libmonolight_la UI sources
 deprecated_libmonolight_ui_h_sources =
@@ -73,6 +73,8 @@ deprecated_libmonolight_ui_h_sources =
 libmonolight_ui_h_sources = \
 	$(deprecated_libmonolight_ui_h_sources) \
 	monolight/ui/monolight_window.h \
+	monolight/ui/monolight_menu_bar.h \
+	monolight/ui/monolight_config_dialog.h \
 	monolight/ui/monolight_server_config.h \
 	monolight/ui/monolight_drawing_area.h \
 	monolight/ui/monolight_rgb_matrix.h
@@ -82,6 +84,8 @@ deprecated_libmonolight_ui_c_sources =
 libmonolight_ui_c_sources = \
 	$(deprecated_libmonolight_ui_c_sources) \
 	monolight/ui/monolight_window.c \
+	monolight/ui/monolight_menu_bar.c \
+	monolight/ui/monolight_config_dialog.c \
 	monolight/ui/monolight_server_config.c \
 	monolight/ui/monolight_drawing_area.c \
 	monolight/ui/monolight_rgb_matrix.c

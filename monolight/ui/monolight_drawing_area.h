@@ -32,6 +32,11 @@
 #define MONOLIGHT_IS_DRAWING_AREA_CLASS(class)     (G_TYPE_CHECK_CLASS_TYPE((class), MONOLIGHT_TYPE_DRAWING_AREA))
 #define MONOLIGHT_DRAWING_AREA_GET_CLASS(obj)      (G_TYPE_INSTANCE_GET_CLASS((obj), MONOLIGHT_TYPE_DRAWING_AREA, MonolightDrawingAreaClass))
 
+#define MONOLIGHT_DRAWING_AREA_DEFAULT_SCALE_FACTOR (8)
+
+#define MONOLIGHT_DRAWING_AREA_DEFAULT_WIDTH (96)
+#define MONOLIGHT_DRAWING_AREA_DEFAULT_HEIGHT (96)
+
 typedef struct _MonolightDrawingArea MonolightDrawingArea;
 typedef struct _MonolightDrawingAreaClass MonolightDrawingAreaClass;
 

@@ -29,12 +29,15 @@
 #include <locale.h>
 
 #include <monolight/monolight_main.h>
+#include <monolight/ui/monolight_window.h>
 
 #include "config.h"
 
 int
 main(int argc, char **argv)
 {
+  MonolightWindow *window;
+  
   putenv("TZ=UTC");
   
   setlocale(LC_ALL, "");
@@ -43,7 +46,10 @@ main(int argc, char **argv)
 
   gtk_init(&argc, &argv);
 
-  //TODO:JK: implement me
+  window = monolight_window_new();
+  gtk_widget_show_all(window);
+
+  gtk_main();
   
   return(0);
 }

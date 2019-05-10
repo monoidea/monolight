@@ -25,6 +25,18 @@ void monolight_drawing_area_class_init(MonolightDrawingAreaClass *drawing_area);
 void monolight_drawing_area_init(MonolightDrawingArea *drawing_area);
 void monolight_drawing_area_finalize(GObject *gobject);
 
+void monolight_drawing_area_map(GtkWidget *widget);
+void monolight_drawing_area_realize(GtkWidget *widget);
+void monolight_drawing_area_size_request(GtkWidget *widget,
+					 GtkRequisition   *requisition);
+void monolight_drawing_area_size_allocate(GtkWidget *widget,
+					  GtkAllocation *allocation);
+gboolean monolight_drawing_area_expose(GtkWidget *widget,
+				       GdkEventExpose *event);
+void monolight_drawing_area_show(GtkWidget *widget);
+
+void monolight_drawing_area_draw(MonolightDrawingArea *drawing_area);
+
 /**
  * SECTION:monolight_drawing_area
  * @short_description: The drawing_area object.
@@ -73,6 +85,7 @@ void
 monolight_drawing_area_class_init(MonolightDrawingAreaClass *drawing_area)
 {
   GObjectClass *gobject;
+  GtkWidgetClass *widget;
 
   monolight_drawing_area_parent_class = g_type_class_peek_parent(drawing_area);
 
@@ -80,11 +93,25 @@ monolight_drawing_area_class_init(MonolightDrawingAreaClass *drawing_area)
   gobject = (GObjectClass *) drawing_area;
 
   gobject->finalize = monolight_drawing_area_finalize;
+
+  /* GtkWidgetClass */
+  widget = (GtkWidgetClass *) drawing_area;
+
+  //  widget->map = monolight_drawing_area_map;
+  widget->realize = monolight_drawing_area_realize;
+  widget->expose_event = monolight_drawing_area_expose;
+  widget->size_request = monolight_drawing_area_size_request;
+  widget->size_allocate = monolight_drawing_area_size_allocate;
+  widget->show = monolight_drawing_area_show;
 }
 
 void
 monolight_drawing_area_init(MonolightDrawingArea *drawing_area)
 {
+  g_object_set(G_OBJECT(drawing_area),
+	       "app-paintable", TRUE,
+	       NULL);
+
   //TODO:JK: implement me
 }
 
@@ -97,6 +124,109 @@ monolight_drawing_area_finalize(GObject *gobject)
 
   /* call parent */
   G_OBJECT_CLASS(monolight_drawing_area_parent_class)->finalize(gobject);
+}
+
+void
+monolight_drawing_area_map(GtkWidget *widget)
+{
+  if(gtk_widget_get_realized (widget) && !gtk_widget_get_mapped(widget)){
+    GTK_WIDGET_CLASS(monolight_drawing_area_parent_class)->map(widget);
+    
+    gdk_window_show(widget->window);
+    monolight_drawing_area_draw((MonolightDrawingArea *) widget);
+  }
+}
+
+void
+monolight_drawing_area_realize(GtkWidget *widget)
+{
+  MonolightDrawingArea *drawing_area;
+
+  GdkWindowAttr attributes;
+
+  gint attributes_mask;
+
+  g_return_if_fail(widget != NULL);
+  g_return_if_fail(MONOLIGHT_IS_DRAWING_AREA(widget));
+
+  drawing_area = MONOLIGHT_DRAWING_AREA(widget);
+
+  gtk_widget_set_realized(widget, TRUE);
+
+  /*  */
+  attributes.window_type = GDK_WINDOW_CHILD;
+  
+  attributes.x = widget->allocation.x;
+  attributes.y = widget->allocation.y;
+  attributes.width = widget->allocation.width;
+  attributes.height = widget->allocation.height;
+
+  attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL | GDK_WA_COLORMAP;
+
+  attributes.wclass = GDK_INPUT_OUTPUT;
+  attributes.visual = gtk_widget_get_visual (widget);
+  attributes.colormap = gtk_widget_get_colormap (widget);
+  attributes.event_mask = gtk_widget_get_events (widget);
+  attributes.event_mask |= (GDK_EXPOSURE_MASK);
+
+  widget->window = gdk_window_new(gtk_widget_get_parent_window (widget),
+				  &attributes, attributes_mask);
+  gdk_window_set_user_data(widget->window, drawing_area);
+
+  widget->style = gtk_style_attach(widget->style,
+				   widget->window);
+  gtk_style_set_background(widget->style,
+			   widget->window,
+			   GTK_STATE_NORMAL);
+
+  gtk_widget_queue_resize(widget);
+}
+
+void
+monolight_drawing_area_size_request(GtkWidget *widget,
+				    GtkRequisition *requisition)
+{
+  MonolightDrawingArea *drawing_area;
+
+  drawing_area = MONOLIGHT_DRAWING_AREA(widget);
+
+  requisition->width = MONOLIGHT_DRAWING_AREA_DEFAULT_SCALE_FACTOR * MONOLIGHT_DRAWING_AREA_DEFAULT_WIDTH;
+  requisition->height = MONOLIGHT_DRAWING_AREA_DEFAULT_SCALE_FACTOR * MONOLIGHT_DRAWING_AREA_DEFAULT_HEIGHT;
+}
+
+void
+monolight_drawing_area_size_allocate(GtkWidget *widget,
+				     GtkAllocation *allocation)
+{
+  MonolightDrawingArea *drawing_area;
+
+  drawing_area = MONOLIGHT_DRAWING_AREA(widget);
+  
+  widget->allocation = *allocation;
+
+  widget->allocation.width = MONOLIGHT_DRAWING_AREA_DEFAULT_SCALE_FACTOR * MONOLIGHT_DRAWING_AREA_DEFAULT_WIDTH;
+  widget->allocation.height = MONOLIGHT_DRAWING_AREA_DEFAULT_SCALE_FACTOR * MONOLIGHT_DRAWING_AREA_DEFAULT_HEIGHT;
+}
+
+gboolean
+monolight_drawing_area_expose(GtkWidget *widget,
+			      GdkEventExpose *event)
+{
+  monolight_drawing_area_draw(MONOLIGHT_DRAWING_AREA(widget));
+
+  return(FALSE);
+}
+
+void
+monolight_drawing_area_show(GtkWidget *widget)
+{
+  GTK_WIDGET_CLASS(monolight_drawing_area_parent_class)->show(widget);
+}
+
+void
+monolight_drawing_area_draw(MonolightDrawingArea *drawing_area)
+{
+  //TODO:JK: implement me
 }
 
 /**

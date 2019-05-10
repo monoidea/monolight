@@ -25,6 +25,10 @@
 
 #include <gtk/gtk.h>
 
+#include <monolight/ui/monolight_menu_bar.h>
+#include <monolight/ui/monolight_drawing_area.h>
+#include <monolight/ui/monolight_config_dialog.h>
+
 #define MONOLIGHT_TYPE_WINDOW                (monolight_window_get_type())
 #define MONOLIGHT_WINDOW(obj)                (G_TYPE_CHECK_INSTANCE_CAST((obj), MONOLIGHT_TYPE_WINDOW, MonolightWindow))
 #define MONOLIGHT_WINDOW_CLASS(class)        (G_TYPE_CHECK_CLASS_CAST((class), MONOLIGHT_TYPE_WINDOW, MonolightWindowClass))
@@ -38,6 +42,12 @@ typedef struct _MonolightWindowClass MonolightWindowClass;
 struct _MonolightWindow
 {
   GtkWindow window;
+
+  MonolightMenuBar *menu_bar;
+
+  MonolightDrawingArea *drawing_area;
+
+  MonolightConfigDialog *config_dialog;
 };
 
 struct _MonolightWindowClass

@@ -656,6 +656,10 @@ GTKDOC_REBASE
 GTKDOC_CHECK_PATH
 GTKDOC_CHECK
 LIBOBJS
+LIBAGS_AUDIO_LIBS
+LIBAGS_AUDIO_CFLAGS
+LIBAGS_LIBS
+LIBAGS_CFLAGS
 GTK_LIBS
 GTK_CFLAGS
 CAIRO_LIBS
@@ -846,6 +850,10 @@ CAIRO_CFLAGS
 CAIRO_LIBS
 GTK_CFLAGS
 GTK_LIBS
+LIBAGS_CFLAGS
+LIBAGS_LIBS
+LIBAGS_AUDIO_CFLAGS
+LIBAGS_AUDIO_LIBS
 GTKDOC_DEPS_CFLAGS
 GTKDOC_DEPS_LIBS'
 
@@ -1541,6 +1549,13 @@ Some influential environment variables:
   CAIRO_LIBS  linker flags for CAIRO, overriding pkg-config
   GTK_CFLAGS  C compiler flags for GTK, overriding pkg-config
   GTK_LIBS    linker flags for GTK, overriding pkg-config
+  LIBAGS_CFLAGS
+              C compiler flags for LIBAGS, overriding pkg-config
+  LIBAGS_LIBS linker flags for LIBAGS, overriding pkg-config
+  LIBAGS_AUDIO_CFLAGS
+              C compiler flags for LIBAGS_AUDIO, overriding pkg-config
+  LIBAGS_AUDIO_LIBS
+              linker flags for LIBAGS_AUDIO, overriding pkg-config
   GTKDOC_DEPS_CFLAGS
               C compiler flags for GTKDOC_DEPS, overriding pkg-config
   GTKDOC_DEPS_LIBS
@@ -15707,6 +15722,194 @@ See \`config.log' for more details" "$LINENO" 5; }
 else
 	GTK_CFLAGS=$pkg_cv_GTK_CFLAGS
 	GTK_LIBS=$pkg_cv_GTK_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+
+fi
+
+
+
+
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for LIBAGS" >&5
+$as_echo_n "checking for LIBAGS... " >&6; }
+
+if test -n "$LIBAGS_CFLAGS"; then
+    pkg_cv_LIBAGS_CFLAGS="$LIBAGS_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libags >= 2.1.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libags >= 2.1.0") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_LIBAGS_CFLAGS=`$PKG_CONFIG --cflags "libags >= 2.1.0" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$LIBAGS_LIBS"; then
+    pkg_cv_LIBAGS_LIBS="$LIBAGS_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libags >= 2.1.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libags >= 2.1.0") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_LIBAGS_LIBS=`$PKG_CONFIG --libs "libags >= 2.1.0" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        LIBAGS_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libags >= 2.1.0" 2>&1`
+        else
+	        LIBAGS_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libags >= 2.1.0" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$LIBAGS_PKG_ERRORS" >&5
+
+	as_fn_error $? "Package requirements (libags >= 2.1.0) were not met:
+
+$LIBAGS_PKG_ERRORS
+
+Consider adjusting the PKG_CONFIG_PATH environment variable if you
+installed software in a non-standard prefix.
+
+Alternatively, you may set the environment variables LIBAGS_CFLAGS
+and LIBAGS_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details." "$LINENO" 5
+elif test $pkg_failed = untried; then
+     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+	{ { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error $? "The pkg-config script could not be found or is too old.  Make sure it
+is in your PATH or set the PKG_CONFIG environment variable to the full
+path to pkg-config.
+
+Alternatively, you may set the environment variables LIBAGS_CFLAGS
+and LIBAGS_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.
+
+To get pkg-config, see <http://pkg-config.freedesktop.org/>.
+See \`config.log' for more details" "$LINENO" 5; }
+else
+	LIBAGS_CFLAGS=$pkg_cv_LIBAGS_CFLAGS
+	LIBAGS_LIBS=$pkg_cv_LIBAGS_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+
+fi
+
+
+
+
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for LIBAGS_AUDIO" >&5
+$as_echo_n "checking for LIBAGS_AUDIO... " >&6; }
+
+if test -n "$LIBAGS_AUDIO_CFLAGS"; then
+    pkg_cv_LIBAGS_AUDIO_CFLAGS="$LIBAGS_AUDIO_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libags_audio >= 2.1.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libags_audio >= 2.1.0") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_LIBAGS_AUDIO_CFLAGS=`$PKG_CONFIG --cflags "libags_audio >= 2.1.0" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$LIBAGS_AUDIO_LIBS"; then
+    pkg_cv_LIBAGS_AUDIO_LIBS="$LIBAGS_AUDIO_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libags_audio >= 2.1.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libags_audio >= 2.1.0") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_LIBAGS_AUDIO_LIBS=`$PKG_CONFIG --libs "libags_audio >= 2.1.0" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        LIBAGS_AUDIO_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libags_audio >= 2.1.0" 2>&1`
+        else
+	        LIBAGS_AUDIO_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libags_audio >= 2.1.0" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$LIBAGS_AUDIO_PKG_ERRORS" >&5
+
+	as_fn_error $? "Package requirements (libags_audio >= 2.1.0) were not met:
+
+$LIBAGS_AUDIO_PKG_ERRORS
+
+Consider adjusting the PKG_CONFIG_PATH environment variable if you
+installed software in a non-standard prefix.
+
+Alternatively, you may set the environment variables LIBAGS_AUDIO_CFLAGS
+and LIBAGS_AUDIO_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details." "$LINENO" 5
+elif test $pkg_failed = untried; then
+     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+	{ { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error $? "The pkg-config script could not be found or is too old.  Make sure it
+is in your PATH or set the PKG_CONFIG environment variable to the full
+path to pkg-config.
+
+Alternatively, you may set the environment variables LIBAGS_AUDIO_CFLAGS
+and LIBAGS_AUDIO_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.
+
+To get pkg-config, see <http://pkg-config.freedesktop.org/>.
+See \`config.log' for more details" "$LINENO" 5; }
+else
+	LIBAGS_AUDIO_CFLAGS=$pkg_cv_LIBAGS_AUDIO_CFLAGS
+	LIBAGS_AUDIO_LIBS=$pkg_cv_LIBAGS_AUDIO_LIBS
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
 
