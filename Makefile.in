@@ -149,9 +149,20 @@ am__uninstall_files_from_dir = { \
          $(am__cd) "$$dir" && rm -f $$files; }; \
   }
 LTLIBRARIES = $(libmonolight_LTLIBRARIES)
-libmonolight_la_DEPENDENCIES =
+am__DEPENDENCIES_1 =
+libmonolight_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am__objects_1 =
-am_libmonolight_la_OBJECTS = $(am__objects_1)
+am__objects_2 = $(am__objects_1)
+am__objects_3 = $(am__objects_2)
+am__dirstamp = $(am__leading_dot)dirstamp
+am__objects_4 = $(am__objects_1) \
+	monolight/ui/libmonolight_la-monolight_window.lo \
+	monolight/ui/libmonolight_la-monolight_server_config.lo \
+	monolight/ui/libmonolight_la-monolight_drawing_area.lo \
+	monolight/ui/libmonolight_la-monolight_rgb_matrix.lo
+am_libmonolight_la_OBJECTS = $(am__objects_3) $(am__objects_4)
 libmonolight_la_OBJECTS = $(am_libmonolight_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -161,15 +172,21 @@ libmonolight_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libmonolight_la_CFLAGS) $(CFLAGS) $(libmonolight_la_LDFLAGS) \
 	$(LDFLAGS) -o $@
-am_monolight_led_OBJECTS =
+am__objects_5 = monolight/led-monolight_main.$(OBJEXT)
+am_monolight_led_OBJECTS = $(am__objects_1) $(am__objects_5)
 monolight_led_OBJECTS = $(am_monolight_led_OBJECTS)
-monolight_led_DEPENDENCIES = libmonolight.la
+monolight_led_DEPENDENCIES = libmonolight.la $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 monolight_led_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(monolight_led_CFLAGS) \
 	$(CFLAGS) $(monolight_led_LDFLAGS) $(LDFLAGS) -o $@
-am_monolight_test_OBJECTS =
+am__objects_6 = monolight/test-monolight_test.$(OBJEXT)
+am_monolight_test_OBJECTS = $(am__objects_1) $(am__objects_6)
 monolight_test_OBJECTS = $(am_monolight_test_OBJECTS)
-monolight_test_DEPENDENCIES = libmonolight.la
+monolight_test_DEPENDENCIES = libmonolight.la $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 monolight_test_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(monolight_test_CFLAGS) $(CFLAGS) $(monolight_test_LDFLAGS) \
@@ -187,6 +204,15 @@ am__v_at_ = $(am__v_at_@AM_DEFAULT_V@)
 am__v_at_0 = @
 am__v_at_1 = 
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)/monolight
+depcomp = $(SHELL) $(top_srcdir)/depcomp
+am__maybe_remake_depfiles = depfiles
+am__depfiles_remade = monolight/$(DEPDIR)/led-monolight_main.Po \
+	monolight/$(DEPDIR)/test-monolight_test.Po \
+	monolight/ui/$(DEPDIR)/libmonolight_la-monolight_drawing_area.Plo \
+	monolight/ui/$(DEPDIR)/libmonolight_la-monolight_rgb_matrix.Plo \
+	monolight/ui/$(DEPDIR)/libmonolight_la-monolight_server_config.Plo \
+	monolight/ui/$(DEPDIR)/libmonolight_la-monolight_window.Plo
+am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -255,7 +281,7 @@ DIST_SUBDIRS = $(SUBDIRS)
 am__DIST_COMMON = $(srcdir)/Makefile.in \
 	$(top_srcdir)/monolight/config.h.in ABOUT-NLS AUTHORS COPYING \
 	ChangeLog INSTALL NEWS README compile config.guess \
-	config.rpath config.sub install-sh ltmain.sh missing
+	config.rpath config.sub depcomp install-sh ltmain.sh missing
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -306,6 +332,8 @@ AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
+CAIRO_CFLAGS = @CAIRO_CFLAGS@
+CAIRO_LIBS = @CAIRO_LIBS@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 
@@ -325,9 +353,13 @@ ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
+GDKPIXBUF_CFLAGS = @GDKPIXBUF_CFLAGS@
+GDKPIXBUF_LIBS = @GDKPIXBUF_LIBS@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
+GOBJECT_CFLAGS = @GOBJECT_CFLAGS@
+GOBJECT_LIBS = @GOBJECT_LIBS@
 GREP = @GREP@
 GTKDOC_CHECK = @GTKDOC_CHECK@
 GTKDOC_CHECK_PATH = @GTKDOC_CHECK_PATH@
@@ -335,6 +367,8 @@ GTKDOC_DEPS_CFLAGS = @GTKDOC_DEPS_CFLAGS@
 GTKDOC_DEPS_LIBS = @GTKDOC_DEPS_LIBS@
 GTKDOC_MKPDF = @GTKDOC_MKPDF@
 GTKDOC_REBASE = @GTKDOC_REBASE@
+GTK_CFLAGS = @GTK_CFLAGS@
+GTK_LIBS = @GTK_LIBS@
 HTML_DIR = @HTML_DIR@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -451,9 +485,13 @@ top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
 SUBDIRS = po
 ACLOCAL_AMFLAGS = -I m4
-monolight_led_CFLAGS = @MONOLIGHT_LED_CFLAGS@
+monolight_led_CFLAGS = @MONOLIGHT_LED_CFLAGS@ $(COMPILER_FLAGS) \
+	$(WARN_FLAGS) -I./ -I/usr/include $(GOBJECT_CFLAGS) \
+	$(GDKPIXBUF_CFLAGS) $(CAIRO_CFLAGS) $(GTK_CFLAGS)
 monolight_led_LDFLAGS = @MONOLIGHT_LED_LDFLAGS@ -pthread
-monolight_test_CFLAGS = @MONOLIGHT_TEST_CFLAGS@
+monolight_test_CFLAGS = @MONOLIGHT_TEST_CFLAGS@ $(COMPILER_FLAGS) \
+	$(WARN_FLAGS) -I./ -I/usr/include $(GOBJECT_CFLAGS) \
+	$(GDKPIXBUF_CFLAGS) $(CAIRO_CFLAGS) $(GTK_CFLAGS)
 monolight_test_LDFLAGS = @MONOLIGHT_TEST_LDFLAGS@ -pthread
 libmonolightdir = $(libdir)/monolight
 libmonolight_LTLIBRARIES = libmonolight.la
@@ -473,21 +511,39 @@ EXTRA_DIST = config.rpath \
 CLEANFILES = \
 	m4/Makefile
 
-libmonolight_la_HEADERS_0 = 
-libmonolight_la_SOURCES = $(libmonolight_la_HEADERS_0)
+libmonolight_la_HEADERS_0 = $(libmonolight_ui_h_sources)
+libmonolight_la_SOURCES = $(libmonolight_la_HEADERS_0) $(libmonolight_ui_c_sources)
 
 # library libmonolight
-libmonolight_la_CFLAGS = $(CFLAGS)
+libmonolight_la_CFLAGS = $(CFLAGS) $(COMPILER_FLAGS) $(WARN_FLAGS) -I./ -I/usr/include $(GOBJECT_CFLAGS) $(GDKPIXBUF_CFLAGS) $(CAIRO_CFLAGS) $(GTK_CFLAGS)
 libmonolight_la_LDFLAGS = $(LDFLAGS) -version-info 1:0:0 -shared -fPIC -Wl,-soname,libmonolight.so -pthread
-libmonolight_la_LIBADD = -ldl -lm
+libmonolight_la_LIBADD = -ldl -lm $(GOBJECT_LIBS) $(GDKPIXBUF_LIBS) $(CAIRO_LIBS) $(GTK_LIBS)
 
 # monolight-test
-monolight_test_SOURCES = 
-monolight_test_LDADD = libmonolight.la -ldl -lm
+monolight_test_SOURCES = $(monolight_testheaders) $(monolight_test_c_sources)
+monolight_test_LDADD = libmonolight.la -ldl -lm $(GOBJECT_LIBS) $(GDKPIXBUF_LIBS) $(CAIRO_LIBS) $(GTK_LIBS)
 
 # monolight-led
-monolight_led_SOURCES = 
-monolight_led_LDADD = libmonolight.la -ldl -lm
+monolight_led_SOURCES = $(monolight_ledheaders) $(monolight_led_c_sources)
+monolight_led_LDADD = libmonolight.la -ldl -lm $(GOBJECT_LIBS) $(GDKPIXBUF_LIBS) $(CAIRO_LIBS) $(GTK_LIBS)
+
+# libmonolight_la UI sources
+deprecated_libmonolight_ui_h_sources = 
+libmonolight_ui_h_sources = \
+	$(deprecated_libmonolight_ui_h_sources) \
+	monolight/ui/monolight_window.h \
+	monolight/ui/monolight_server_config.h \
+	monolight/ui/monolight_drawing_area.h \
+	monolight/ui/monolight_rgb_matrix.h
+
+deprecated_libmonolight_ui_c_sources = 
+libmonolight_ui_c_sources = \
+	$(deprecated_libmonolight_ui_c_sources) \
+	monolight/ui/monolight_window.c \
+	monolight/ui/monolight_server_config.c \
+	monolight/ui/monolight_drawing_area.c \
+	monolight/ui/monolight_rgb_matrix.c
+
 
 # monolight_test all files
 monolight_testheaders = \
@@ -507,6 +563,7 @@ monolight_led_c_sources = \
 all: all-recursive
 
 .SUFFIXES:
+.SUFFIXES: .c .lo .o .obj
 am--refresh: Makefile
 	@:
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
@@ -639,13 +696,41 @@ clean-libmonolightLTLIBRARIES:
 	  echo rm -f $${locs}; \
 	  rm -f $${locs}; \
 	}
+monolight/ui/$(am__dirstamp):
+	@$(MKDIR_P) monolight/ui
+	@: > monolight/ui/$(am__dirstamp)
+monolight/ui/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) monolight/ui/$(DEPDIR)
+	@: > monolight/ui/$(DEPDIR)/$(am__dirstamp)
+monolight/ui/libmonolight_la-monolight_window.lo:  \
+	monolight/ui/$(am__dirstamp) \
+	monolight/ui/$(DEPDIR)/$(am__dirstamp)
+monolight/ui/libmonolight_la-monolight_server_config.lo:  \
+	monolight/ui/$(am__dirstamp) \
+	monolight/ui/$(DEPDIR)/$(am__dirstamp)
+monolight/ui/libmonolight_la-monolight_drawing_area.lo:  \
+	monolight/ui/$(am__dirstamp) \
+	monolight/ui/$(DEPDIR)/$(am__dirstamp)
+monolight/ui/libmonolight_la-monolight_rgb_matrix.lo:  \
+	monolight/ui/$(am__dirstamp) \
+	monolight/ui/$(DEPDIR)/$(am__dirstamp)
 
 libmonolight.la: $(libmonolight_la_OBJECTS) $(libmonolight_la_DEPENDENCIES) $(EXTRA_libmonolight_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(libmonolight_la_LINK) -rpath $(libmonolightdir) $(libmonolight_la_OBJECTS) $(libmonolight_la_LIBADD) $(LIBS)
+monolight/$(am__dirstamp):
+	@$(MKDIR_P) monolight
+	@: > monolight/$(am__dirstamp)
+monolight/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) monolight/$(DEPDIR)
+	@: > monolight/$(DEPDIR)/$(am__dirstamp)
+monolight/led-monolight_main.$(OBJEXT): monolight/$(am__dirstamp) \
+	monolight/$(DEPDIR)/$(am__dirstamp)
 
 monolight-led$(EXEEXT): $(monolight_led_OBJECTS) $(monolight_led_DEPENDENCIES) $(EXTRA_monolight_led_DEPENDENCIES) 
 	@rm -f monolight-led$(EXEEXT)
 	$(AM_V_CCLD)$(monolight_led_LINK) $(monolight_led_OBJECTS) $(monolight_led_LDADD) $(LIBS)
+monolight/test-monolight_test.$(OBJEXT): monolight/$(am__dirstamp) \
+	monolight/$(DEPDIR)/$(am__dirstamp)
 
 monolight-test$(EXEEXT): $(monolight_test_OBJECTS) $(monolight_test_DEPENDENCIES) $(EXTRA_monolight_test_DEPENDENCIES) 
 	@rm -f monolight-test$(EXEEXT)
@@ -653,15 +738,112 @@ monolight-test$(EXEEXT): $(monolight_test_OBJECTS) $(monolight_test_DEPENDENCIES
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
+	-rm -f monolight/*.$(OBJEXT)
+	-rm -f monolight/ui/*.$(OBJEXT)
+	-rm -f monolight/ui/*.lo
 
 distclean-compile:
 	-rm -f *.tab.c
+
+@AMDEP_TRUE@@am__include@ @am__quote@monolight/$(DEPDIR)/led-monolight_main.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@monolight/$(DEPDIR)/test-monolight_test.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@monolight/ui/$(DEPDIR)/libmonolight_la-monolight_drawing_area.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@monolight/ui/$(DEPDIR)/libmonolight_la-monolight_rgb_matrix.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@monolight/ui/$(DEPDIR)/libmonolight_la-monolight_server_config.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@monolight/ui/$(DEPDIR)/libmonolight_la-monolight_window.Plo@am__quote@ # am--include-marker
+
+$(am__depfiles_remade):
+	@$(MKDIR_P) $(@D)
+	@echo '# dummy' >$@-t && $(am__mv) $@-t $@
+
+am--depfiles: $(am__depfiles_remade)
+
+.c.o:
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ $<
+
+.c.obj:
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+
+.c.lo:
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.lo$$||'`;\
+@am__fastdepCC_TRUE@	$(LTCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
+
+monolight/ui/libmonolight_la-monolight_window.lo: monolight/ui/monolight_window.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonolight_la_CFLAGS) $(CFLAGS) -MT monolight/ui/libmonolight_la-monolight_window.lo -MD -MP -MF monolight/ui/$(DEPDIR)/libmonolight_la-monolight_window.Tpo -c -o monolight/ui/libmonolight_la-monolight_window.lo `test -f 'monolight/ui/monolight_window.c' || echo '$(srcdir)/'`monolight/ui/monolight_window.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) monolight/ui/$(DEPDIR)/libmonolight_la-monolight_window.Tpo monolight/ui/$(DEPDIR)/libmonolight_la-monolight_window.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='monolight/ui/monolight_window.c' object='monolight/ui/libmonolight_la-monolight_window.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonolight_la_CFLAGS) $(CFLAGS) -c -o monolight/ui/libmonolight_la-monolight_window.lo `test -f 'monolight/ui/monolight_window.c' || echo '$(srcdir)/'`monolight/ui/monolight_window.c
+
+monolight/ui/libmonolight_la-monolight_server_config.lo: monolight/ui/monolight_server_config.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonolight_la_CFLAGS) $(CFLAGS) -MT monolight/ui/libmonolight_la-monolight_server_config.lo -MD -MP -MF monolight/ui/$(DEPDIR)/libmonolight_la-monolight_server_config.Tpo -c -o monolight/ui/libmonolight_la-monolight_server_config.lo `test -f 'monolight/ui/monolight_server_config.c' || echo '$(srcdir)/'`monolight/ui/monolight_server_config.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) monolight/ui/$(DEPDIR)/libmonolight_la-monolight_server_config.Tpo monolight/ui/$(DEPDIR)/libmonolight_la-monolight_server_config.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='monolight/ui/monolight_server_config.c' object='monolight/ui/libmonolight_la-monolight_server_config.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonolight_la_CFLAGS) $(CFLAGS) -c -o monolight/ui/libmonolight_la-monolight_server_config.lo `test -f 'monolight/ui/monolight_server_config.c' || echo '$(srcdir)/'`monolight/ui/monolight_server_config.c
+
+monolight/ui/libmonolight_la-monolight_drawing_area.lo: monolight/ui/monolight_drawing_area.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonolight_la_CFLAGS) $(CFLAGS) -MT monolight/ui/libmonolight_la-monolight_drawing_area.lo -MD -MP -MF monolight/ui/$(DEPDIR)/libmonolight_la-monolight_drawing_area.Tpo -c -o monolight/ui/libmonolight_la-monolight_drawing_area.lo `test -f 'monolight/ui/monolight_drawing_area.c' || echo '$(srcdir)/'`monolight/ui/monolight_drawing_area.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) monolight/ui/$(DEPDIR)/libmonolight_la-monolight_drawing_area.Tpo monolight/ui/$(DEPDIR)/libmonolight_la-monolight_drawing_area.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='monolight/ui/monolight_drawing_area.c' object='monolight/ui/libmonolight_la-monolight_drawing_area.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonolight_la_CFLAGS) $(CFLAGS) -c -o monolight/ui/libmonolight_la-monolight_drawing_area.lo `test -f 'monolight/ui/monolight_drawing_area.c' || echo '$(srcdir)/'`monolight/ui/monolight_drawing_area.c
+
+monolight/ui/libmonolight_la-monolight_rgb_matrix.lo: monolight/ui/monolight_rgb_matrix.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonolight_la_CFLAGS) $(CFLAGS) -MT monolight/ui/libmonolight_la-monolight_rgb_matrix.lo -MD -MP -MF monolight/ui/$(DEPDIR)/libmonolight_la-monolight_rgb_matrix.Tpo -c -o monolight/ui/libmonolight_la-monolight_rgb_matrix.lo `test -f 'monolight/ui/monolight_rgb_matrix.c' || echo '$(srcdir)/'`monolight/ui/monolight_rgb_matrix.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) monolight/ui/$(DEPDIR)/libmonolight_la-monolight_rgb_matrix.Tpo monolight/ui/$(DEPDIR)/libmonolight_la-monolight_rgb_matrix.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='monolight/ui/monolight_rgb_matrix.c' object='monolight/ui/libmonolight_la-monolight_rgb_matrix.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonolight_la_CFLAGS) $(CFLAGS) -c -o monolight/ui/libmonolight_la-monolight_rgb_matrix.lo `test -f 'monolight/ui/monolight_rgb_matrix.c' || echo '$(srcdir)/'`monolight/ui/monolight_rgb_matrix.c
+
+monolight/led-monolight_main.o: monolight/monolight_main.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(monolight_led_CFLAGS) $(CFLAGS) -MT monolight/led-monolight_main.o -MD -MP -MF monolight/$(DEPDIR)/led-monolight_main.Tpo -c -o monolight/led-monolight_main.o `test -f 'monolight/monolight_main.c' || echo '$(srcdir)/'`monolight/monolight_main.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) monolight/$(DEPDIR)/led-monolight_main.Tpo monolight/$(DEPDIR)/led-monolight_main.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='monolight/monolight_main.c' object='monolight/led-monolight_main.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(monolight_led_CFLAGS) $(CFLAGS) -c -o monolight/led-monolight_main.o `test -f 'monolight/monolight_main.c' || echo '$(srcdir)/'`monolight/monolight_main.c
+
+monolight/led-monolight_main.obj: monolight/monolight_main.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(monolight_led_CFLAGS) $(CFLAGS) -MT monolight/led-monolight_main.obj -MD -MP -MF monolight/$(DEPDIR)/led-monolight_main.Tpo -c -o monolight/led-monolight_main.obj `if test -f 'monolight/monolight_main.c'; then $(CYGPATH_W) 'monolight/monolight_main.c'; else $(CYGPATH_W) '$(srcdir)/monolight/monolight_main.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) monolight/$(DEPDIR)/led-monolight_main.Tpo monolight/$(DEPDIR)/led-monolight_main.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='monolight/monolight_main.c' object='monolight/led-monolight_main.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(monolight_led_CFLAGS) $(CFLAGS) -c -o monolight/led-monolight_main.obj `if test -f 'monolight/monolight_main.c'; then $(CYGPATH_W) 'monolight/monolight_main.c'; else $(CYGPATH_W) '$(srcdir)/monolight/monolight_main.c'; fi`
+
+monolight/test-monolight_test.o: monolight/monolight_test.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(monolight_test_CFLAGS) $(CFLAGS) -MT monolight/test-monolight_test.o -MD -MP -MF monolight/$(DEPDIR)/test-monolight_test.Tpo -c -o monolight/test-monolight_test.o `test -f 'monolight/monolight_test.c' || echo '$(srcdir)/'`monolight/monolight_test.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) monolight/$(DEPDIR)/test-monolight_test.Tpo monolight/$(DEPDIR)/test-monolight_test.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='monolight/monolight_test.c' object='monolight/test-monolight_test.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(monolight_test_CFLAGS) $(CFLAGS) -c -o monolight/test-monolight_test.o `test -f 'monolight/monolight_test.c' || echo '$(srcdir)/'`monolight/monolight_test.c
+
+monolight/test-monolight_test.obj: monolight/monolight_test.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(monolight_test_CFLAGS) $(CFLAGS) -MT monolight/test-monolight_test.obj -MD -MP -MF monolight/$(DEPDIR)/test-monolight_test.Tpo -c -o monolight/test-monolight_test.obj `if test -f 'monolight/monolight_test.c'; then $(CYGPATH_W) 'monolight/monolight_test.c'; else $(CYGPATH_W) '$(srcdir)/monolight/monolight_test.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) monolight/$(DEPDIR)/test-monolight_test.Tpo monolight/$(DEPDIR)/test-monolight_test.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='monolight/monolight_test.c' object='monolight/test-monolight_test.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(monolight_test_CFLAGS) $(CFLAGS) -c -o monolight/test-monolight_test.obj `if test -f 'monolight/monolight_test.c'; then $(CYGPATH_W) 'monolight/monolight_test.c'; else $(CYGPATH_W) '$(srcdir)/monolight/monolight_test.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
 
 clean-libtool:
 	-rm -rf .libs _libs
+	-rm -rf monolight/ui/.libs monolight/ui/_libs
 
 distclean-libtool:
 	-rm -f libtool config.lt
@@ -999,6 +1181,10 @@ clean-generic:
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
+	-rm -f monolight/$(DEPDIR)/$(am__dirstamp)
+	-rm -f monolight/$(am__dirstamp)
+	-rm -f monolight/ui/$(DEPDIR)/$(am__dirstamp)
+	-rm -f monolight/ui/$(am__dirstamp)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
@@ -1010,6 +1196,12 @@ clean-am: clean-binPROGRAMS clean-generic \
 
 distclean: distclean-recursive
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
+		-rm -f monolight/$(DEPDIR)/led-monolight_main.Po
+	-rm -f monolight/$(DEPDIR)/test-monolight_test.Po
+	-rm -f monolight/ui/$(DEPDIR)/libmonolight_la-monolight_drawing_area.Plo
+	-rm -f monolight/ui/$(DEPDIR)/libmonolight_la-monolight_rgb_matrix.Plo
+	-rm -f monolight/ui/$(DEPDIR)/libmonolight_la-monolight_server_config.Plo
+	-rm -f monolight/ui/$(DEPDIR)/libmonolight_la-monolight_window.Plo
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-hdr distclean-libtool distclean-tags
@@ -1057,6 +1249,12 @@ installcheck-am:
 maintainer-clean: maintainer-clean-recursive
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
 	-rm -rf $(top_srcdir)/autom4te.cache
+		-rm -f monolight/$(DEPDIR)/led-monolight_main.Po
+	-rm -f monolight/$(DEPDIR)/test-monolight_test.Po
+	-rm -f monolight/ui/$(DEPDIR)/libmonolight_la-monolight_drawing_area.Plo
+	-rm -f monolight/ui/$(DEPDIR)/libmonolight_la-monolight_rgb_matrix.Plo
+	-rm -f monolight/ui/$(DEPDIR)/libmonolight_la-monolight_server_config.Plo
+	-rm -f monolight/ui/$(DEPDIR)/libmonolight_la-monolight_window.Plo
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
@@ -1082,25 +1280,25 @@ uninstall-am: uninstall-binPROGRAMS uninstall-libmonolightLTLIBRARIES
 .MAKE: $(am__recursive_targets) install-am install-strip
 
 .PHONY: $(am__recursive_targets) CTAGS GTAGS TAGS all all-am \
-	am--refresh check check-am clean clean-binPROGRAMS \
-	clean-cscope clean-generic clean-libmonolightLTLIBRARIES \
-	clean-libtool cscope cscopelist-am ctags ctags-am dist \
-	dist-all dist-bzip2 dist-gzip dist-lzip dist-shar dist-tarZ \
-	dist-xz dist-zip distcheck distclean distclean-compile \
-	distclean-generic distclean-hdr distclean-libtool \
-	distclean-tags distcleancheck distdir distuninstallcheck dvi \
-	dvi-am html html-am info info-am install install-am \
-	install-binPROGRAMS install-data install-data-am install-dvi \
-	install-dvi-am install-exec install-exec-am install-html \
-	install-html-am install-info install-info-am \
-	install-libmonolightLTLIBRARIES install-man install-pdf \
-	install-pdf-am install-ps install-ps-am install-strip \
-	installcheck installcheck-am installdirs installdirs-am \
-	maintainer-clean maintainer-clean-generic monolight-docs-am \
-	monolight-docs-local mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags tags-am uninstall uninstall-am uninstall-binPROGRAMS \
-	uninstall-libmonolightLTLIBRARIES
+	am--depfiles am--refresh check check-am clean \
+	clean-binPROGRAMS clean-cscope clean-generic \
+	clean-libmonolightLTLIBRARIES clean-libtool cscope \
+	cscopelist-am ctags ctags-am dist dist-all dist-bzip2 \
+	dist-gzip dist-lzip dist-shar dist-tarZ dist-xz dist-zip \
+	distcheck distclean distclean-compile distclean-generic \
+	distclean-hdr distclean-libtool distclean-tags distcleancheck \
+	distdir distuninstallcheck dvi dvi-am html html-am info \
+	info-am install install-am install-binPROGRAMS install-data \
+	install-data-am install-dvi install-dvi-am install-exec \
+	install-exec-am install-html install-html-am install-info \
+	install-info-am install-libmonolightLTLIBRARIES install-man \
+	install-pdf install-pdf-am install-ps install-ps-am \
+	install-strip installcheck installcheck-am installdirs \
+	installdirs-am maintainer-clean maintainer-clean-generic \
+	monolight-docs-am monolight-docs-local mostlyclean \
+	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
+	pdf pdf-am ps ps-am tags tags-am uninstall uninstall-am \
+	uninstall-binPROGRAMS uninstall-libmonolightLTLIBRARIES
 
 .PRECIOUS: Makefile
 

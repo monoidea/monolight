@@ -17,33 +17,18 @@
  * along with Monolight.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef __MONOLIGHT_MAIN_H__
+#define __MONOLIGHT_MAIN_H__
+
 #include <glib.h>
 #include <glib-object.h>
-
-#include <gdk/gdk.h>
-#include <pango/pangocairo.h>
+#include <gio/gio.h>
 
 #include <gtk/gtk.h>
 
-#define _GNU_SOURCE
-#include <locale.h>
+#include <stdbool.h>
 
-#include <monolight/monolight_main.h>
+#include <libintl.h>
+#include <stdio.h>
 
-#include "config.h"
-
-int
-main(int argc, char **argv)
-{
-  putenv("TZ=UTC");
-  
-  setlocale(LC_ALL, "");
-  bindtextdomain(PACKAGE, LOCALEDIR);
-  textdomain(PACKAGE);
-
-  gtk_init(&argc, &argv);
-
-  //TODO:JK: implement me
-  
-  return(0);
-}
+#endif /*__MONOLIGHT_MAIN_H__*/

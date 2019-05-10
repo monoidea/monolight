@@ -32,8 +32,7 @@ void monolight_window_finalize(GObject *gobject);
  * @section_id:
  * @include: monolight/ui/monolight_window.h
  *
- * #MonolightWindow is a composite toplevel widget. It contains the
- * menubar, the machine rack and the notation editor.
+ * #MonolightWindow is a composite toplevel widget.
  */
 
 static gpointer monolight_window_parent_class = NULL;

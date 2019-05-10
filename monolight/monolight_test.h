@@ -17,8 +17,8 @@
  * along with Monolight.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __MONOLIGHT_MAIN_H__
-#define __MONOLIGHT_MAIN_H__
+#ifndef __MONOLIGHT_TEST_H__
+#define __MONOLIGHT_TEST_H__
 
 #include <glib.h>
 #include <glib-object.h>
@@ -31,4 +31,4 @@
 #include <libintl.h>
 #include <stdio.h>
 
-#endif /*__MONOLIGHT_MAIN_H__*/
+#endif /*__MONOLIGHT_TEST_H__*/

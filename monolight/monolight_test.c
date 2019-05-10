@@ -28,7 +28,7 @@
 #define _GNU_SOURCE
 #include <locale.h>
 
-#include "monolight_main.h"
+#include <monolight/monolight_main.h>
 
 #include "config.h"
 

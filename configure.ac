@@ -40,6 +40,22 @@ AC_CHECK_LIB([dl], [main], , AC_MSG_ERROR("No dl library present"))
 # FIXME: Replace `main' with a function in `-lm':
 AC_CHECK_LIB([m], [main], , AC_MSG_ERROR("No math library present"))
 
+PKG_CHECK_MODULES([GOBJECT], [gobject-2.0 >= 2.32.3 glib-2.0 >= 2.32.3 gmodule-2.0 >= 2.32.3 gthread-2.0 >= 2.32.3])
+AC_SUBST(GOBJECT_CFLAGS)
+AC_SUBST(GOBJECT_LIBS)
+
+PKG_CHECK_MODULES([GDKPIXBUF], [gdk-pixbuf-2.0 >= 2.32.2])
+AC_SUBST(GDKPIXBUF_CFLAGS)
+AC_SUBST(GDKPIXBUF_LIBS)
+
+PKG_CHECK_MODULES([CAIRO], [cairo >= 1.12.0])
+AC_SUBST(CAIRO_CFLAGS)
+AC_SUBST(CAIRO_LIBS)
+
+PKG_CHECK_MODULES([GTK], [gtk+-2.0 >= 2.24.10])
+AC_SUBST(GTK_CFLAGS)
+AC_SUBST(GTK_LIBS)
+
 # Checks for library functions.
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
