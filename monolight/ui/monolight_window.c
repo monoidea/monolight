@@ -25,6 +25,10 @@ void monolight_window_class_init(MonolightWindowClass *window);
 void monolight_window_init(MonolightWindow *window);
 void monolight_window_finalize(GObject *gobject);
 
+gboolean monolight_window_delete_event_callback(MonolightWindow *window,
+						GdkEvent *event,
+						gpointer user_data);
+
 /**
  * SECTION:monolight_window
  * @short_description: The window object.
@@ -36,7 +40,6 @@ void monolight_window_finalize(GObject *gobject);
  */
 
 static gpointer monolight_window_parent_class = NULL;
-
 
 GType
 monolight_window_get_type()
@@ -86,6 +89,11 @@ monolight_window_init(MonolightWindow *window)
 {
   GtkVBox *vbox;
 
+  window->osc_client = ags_osc_client_new();
+  ags_osc_client_set_flags(window->osc_client,
+                           (AGS_OSC_CLIENT_INET4 |
+                            AGS_OSC_CLIENT_TCP));
+  
   vbox = gtk_vbox_new(FALSE,
 		      0);
   gtk_container_add((GtkContainer *) window,
@@ -108,6 +116,9 @@ monolight_window_init(MonolightWindow *window)
   /* config dialog */
   window->config_dialog = monolight_config_dialog_new();
   window->config_dialog->main_window = window;
+
+  g_signal_connect(window, "delete-event",
+		   G_CALLBACK(monolight_window_delete_event_callback), NULL);
 }
 
 void
@@ -119,6 +130,16 @@ monolight_window_finalize(GObject *gobject)
 
   /* call parent */
   G_OBJECT_CLASS(monolight_window_parent_class)->finalize(gobject);
+}
+
+gboolean
+monolight_window_delete_event_callback(MonolightWindow *window,
+				       GdkEvent *event,
+				       gpointer user_data)
+{
+  gtk_main_quit();
+
+  return(FALSE);
 }
 
 /**

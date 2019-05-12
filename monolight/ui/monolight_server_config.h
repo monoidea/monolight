@@ -44,6 +44,8 @@ struct _MonolightServerConfig
 
   GtkEntry *osc_server_domain;
   GtkEntry *osc_server_port;
+
+  GtkButton *apply;
 };
 
 struct _MonolightServerConfigClass

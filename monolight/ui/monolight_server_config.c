@@ -22,11 +22,16 @@
 #include <ags/libags.h>
 #include <ags/libags-audio.h>
 
+#include <monolight/ui/monolight_window.h>
+#include <monolight/ui/monolight_config_dialog.h>
+
 #include <monolight/i18n.h>
 
 void monolight_server_config_class_init(MonolightServerConfigClass *server_config);
 void monolight_server_config_init(MonolightServerConfig *server_config);
 void monolight_server_config_finalize(GObject *gobject);
+
+void monolight_server_config_apply_callback(GtkWidget *button, MonolightServerConfig *server_config);
 
 /**
  * SECTION:monolight_server_config
@@ -90,7 +95,8 @@ monolight_server_config_init(MonolightServerConfig *server_config)
 {
   GtkTable *table;
   GtkLabel *label;
-
+  GtkAlignment *alignment;
+  
   gchar *str;
   
   table = gtk_table_new(4,
@@ -180,6 +186,23 @@ monolight_server_config_init(MonolightServerConfig *server_config)
 		   0, 0);
 
   g_free(str);
+
+  /* apply */
+  alignment = gtk_alignment_new(1.0,
+				0.0,
+				0.0,
+				0.0);
+  gtk_box_pack_start((GtkBox *) server_config,
+		     (GtkWidget *) alignment,
+		     FALSE, FALSE,
+		     0);
+
+  server_config->apply = gtk_button_new_from_stock(GTK_STOCK_APPLY);
+  gtk_container_add((GtkContainer *) alignment,
+		    (GtkWidget *) server_config->apply);
+
+  g_signal_connect(server_config->apply, "clicked",
+		   G_CALLBACK(monolight_server_config_apply_callback), server_config);
 }
 
 void
@@ -191,6 +214,41 @@ monolight_server_config_finalize(GObject *gobject)
 
   /* call parent */
   G_OBJECT_CLASS(monolight_server_config_parent_class)->finalize(gobject);
+}
+
+void
+monolight_server_config_apply_callback(GtkWidget *button, MonolightServerConfig *server_config)
+{
+  MonolightWindow *window;
+  MonolightConfigDialog *config_dialog;
+
+  gchar *str;
+  gchar *domain;
+  gchar *ip4;
+  gchar *ip6;
+  
+  guint port;
+  
+  config_dialog = gtk_widget_get_toplevel(server_config);
+
+  window = config_dialog->main_window;
+
+  domain = gtk_entry_get_text(server_config->osc_server_domain);
+
+  ip4 = gtk_entry_get_text(server_config->osc_server_ip4);
+
+  ip6 = gtk_entry_get_text(server_config->osc_server_ip6);
+
+  str = gtk_entry_get_text(server_config->osc_server_port);
+  port = g_ascii_strtod(str,
+			NULL);
+    
+  g_object_set(window->osc_client,
+	       "domain", domain,
+	       "ip4", ip4,
+	       "ip6", ip6,
+	       "server-port", port,
+	       NULL);
 }
 
 /**

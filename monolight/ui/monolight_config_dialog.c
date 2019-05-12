@@ -25,6 +25,10 @@ void monolight_config_dialog_class_init(MonolightConfigDialogClass *config_dialo
 void monolight_config_dialog_init(MonolightConfigDialog *config_dialog);
 void monolight_config_dialog_finalize(GObject *gobject);
 
+gboolean monolight_config_dialog_delete_event_callback(MonolightConfigDialog *config_dialog,
+						       GdkEvent *event,
+						       gpointer user_data);
+
 /**
  * SECTION:monolight_config_dialog
  * @short_description: The config_dialog object.
@@ -94,6 +98,9 @@ monolight_config_dialog_init(MonolightConfigDialog *config_dialog)
   gtk_notebook_append_page(config_dialog->notebook,
 			   config_dialog->server_config,
 			   gtk_label_new(i18n("OSC server")));
+
+  g_signal_connect(config_dialog, "delete-event",
+		   G_CALLBACK(monolight_config_dialog_delete_event_callback), NULL);
 }
 
 void
@@ -105,6 +112,16 @@ monolight_config_dialog_finalize(GObject *gobject)
 
   /* call parent */
   G_OBJECT_CLASS(monolight_config_dialog_parent_class)->finalize(gobject);
+}
+
+gboolean
+monolight_config_dialog_delete_event_callback(MonolightConfigDialog *config_dialog,
+					      GdkEvent *event,
+					      gpointer user_data)
+{
+  gtk_widget_hide(config_dialog);
+
+  return(TRUE);
 }
 
 /**

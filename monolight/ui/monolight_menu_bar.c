@@ -154,8 +154,35 @@ monolight_menu_bar_connect_callback(GtkWidget *widget, MonolightMenuBar *menu_ba
 {
   MonolightWindow *window;
 
+  unsigned char *buffer;
+  unsigned char *packet;
+
+  guint buffer_length;
+  
+  static const unsigned char *enable_peak_message = "/meter\x00\x00,sT\x00/AgsSoundProvider/AgsAudio[\"spectrometer\"]/AgsInput[0-1]/AgsAnalyseChannel[0]/AgsPort[\"./magnitude-buffer[0]\"]:value\x00\x00\x00";
+
+  static const guint enable_peak_message_size = 128;
+  
   window = gtk_widget_get_toplevel(menu_bar);
 
+  ags_osc_client_connect(window->osc_client);
+
+  /* enable meter */
+  packet = (unsigned char *) malloc((4 + enable_peak_message_size) * sizeof(unsigned char));
+
+   ags_osc_buffer_util_put_int32(packet,
+                                enable_peak_message_size);
+
+   memcpy(packet + 4, enable_peak_message, (enable_peak_message_size) * sizeof(unsigned char));
+
+   buffer = ags_osc_util_slip_encode(packet,
+				     4 + enable_peak_message_size,
+				     &buffer_length);
+   
+   ags_osc_client_write_bytes(window->osc_client,
+			      buffer, buffer_length);
+
+   
   //TODO:JK: implement me
 }
 
@@ -163,6 +190,10 @@ void
 monolight_menu_bar_disconnect_callback(GtkWidget *widget, MonolightMenuBar *menu_bar)
 {
   MonolightWindow *window;
+
+  static const unsigned char *disable_peak_message = "/meter\x00\x00,sF\x00/AgsSoundProvider/AgsAudio[\"spectrometer\"]/AgsInput[0-1]/AgsPeakChannel[0]/AgsPort[\"./magnitude-buffer[0]\"]:value\x00\x00\x00";
+
+  static const guint disable_peak_message_size = 128;
 
   window = gtk_widget_get_toplevel(menu_bar);
 

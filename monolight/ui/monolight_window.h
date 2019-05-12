@@ -25,6 +25,9 @@
 
 #include <gtk/gtk.h>
 
+#include <ags/libags.h>
+#include <ags/libags-audio.h>
+
 #include <monolight/ui/monolight_menu_bar.h>
 #include <monolight/ui/monolight_drawing_area.h>
 #include <monolight/ui/monolight_config_dialog.h>
@@ -43,6 +46,8 @@ struct _MonolightWindow
 {
   GtkWindow window;
 
+  AgsOscClient *osc_client;
+  
   MonolightMenuBar *menu_bar;
 
   MonolightDrawingArea *drawing_area;
