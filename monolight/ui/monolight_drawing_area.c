@@ -229,6 +229,15 @@ monolight_drawing_area_draw(MonolightDrawingArea *drawing_area)
   //TODO:JK: implement me
 }
 
+void
+monolight_drawing_area_render_magnitude(MonolightDrawingArea *drawing_area,
+					guint audio_channel,
+					gdouble *magnitude_buffer,
+					guint buffer_size)
+{
+  //TODO:JK: implement me
+}
+
 /**
  * monolight_drawing_area_new:
  *

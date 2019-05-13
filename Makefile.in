@@ -164,7 +164,8 @@ am__objects_4 = $(am__objects_1) \
 	monolight/ui/libmonolight_la-monolight_config_dialog.lo \
 	monolight/ui/libmonolight_la-monolight_server_config.lo \
 	monolight/ui/libmonolight_la-monolight_drawing_area.lo \
-	monolight/ui/libmonolight_la-monolight_rgb_matrix.lo
+	monolight/ui/libmonolight_la-monolight_rgb_matrix.lo \
+	monolight/ui/libmonolight_la-monolight_animation_util.lo
 am_libmonolight_la_OBJECTS = $(am__objects_3) $(am__objects_4)
 libmonolight_la_OBJECTS = $(am_libmonolight_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -213,6 +214,7 @@ depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
 am__depfiles_remade = monolight/$(DEPDIR)/led-monolight_main.Po \
 	monolight/$(DEPDIR)/test-monolight_test.Po \
+	monolight/ui/$(DEPDIR)/libmonolight_la-monolight_animation_util.Plo \
 	monolight/ui/$(DEPDIR)/libmonolight_la-monolight_config_dialog.Plo \
 	monolight/ui/$(DEPDIR)/libmonolight_la-monolight_drawing_area.Plo \
 	monolight/ui/$(DEPDIR)/libmonolight_la-monolight_menu_bar.Plo \
@@ -549,7 +551,8 @@ libmonolight_ui_h_sources = \
 	monolight/ui/monolight_config_dialog.h \
 	monolight/ui/monolight_server_config.h \
 	monolight/ui/monolight_drawing_area.h \
-	monolight/ui/monolight_rgb_matrix.h
+	monolight/ui/monolight_rgb_matrix.h \
+	monolight/ui/monolight_animation_util.h
 
 deprecated_libmonolight_ui_c_sources = 
 libmonolight_ui_c_sources = \
@@ -559,7 +562,8 @@ libmonolight_ui_c_sources = \
 	monolight/ui/monolight_config_dialog.c \
 	monolight/ui/monolight_server_config.c \
 	monolight/ui/monolight_drawing_area.c \
-	monolight/ui/monolight_rgb_matrix.c
+	monolight/ui/monolight_rgb_matrix.c \
+	monolight/ui/monolight_animation_util.c
 
 
 # monolight_test all files
@@ -737,6 +741,9 @@ monolight/ui/libmonolight_la-monolight_drawing_area.lo:  \
 monolight/ui/libmonolight_la-monolight_rgb_matrix.lo:  \
 	monolight/ui/$(am__dirstamp) \
 	monolight/ui/$(DEPDIR)/$(am__dirstamp)
+monolight/ui/libmonolight_la-monolight_animation_util.lo:  \
+	monolight/ui/$(am__dirstamp) \
+	monolight/ui/$(DEPDIR)/$(am__dirstamp)
 
 libmonolight.la: $(libmonolight_la_OBJECTS) $(libmonolight_la_DEPENDENCIES) $(EXTRA_libmonolight_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(libmonolight_la_LINK) -rpath $(libmonolightdir) $(libmonolight_la_OBJECTS) $(libmonolight_la_LIBADD) $(LIBS)
@@ -770,6 +777,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@monolight/$(DEPDIR)/led-monolight_main.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@monolight/$(DEPDIR)/test-monolight_test.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@monolight/ui/$(DEPDIR)/libmonolight_la-monolight_animation_util.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@monolight/ui/$(DEPDIR)/libmonolight_la-monolight_config_dialog.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@monolight/ui/$(DEPDIR)/libmonolight_la-monolight_drawing_area.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@monolight/ui/$(DEPDIR)/libmonolight_la-monolight_menu_bar.Plo@am__quote@ # am--include-marker
@@ -848,6 +856,13 @@ monolight/ui/libmonolight_la-monolight_rgb_matrix.lo: monolight/ui/monolight_rgb
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='monolight/ui/monolight_rgb_matrix.c' object='monolight/ui/libmonolight_la-monolight_rgb_matrix.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonolight_la_CFLAGS) $(CFLAGS) -c -o monolight/ui/libmonolight_la-monolight_rgb_matrix.lo `test -f 'monolight/ui/monolight_rgb_matrix.c' || echo '$(srcdir)/'`monolight/ui/monolight_rgb_matrix.c
+
+monolight/ui/libmonolight_la-monolight_animation_util.lo: monolight/ui/monolight_animation_util.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonolight_la_CFLAGS) $(CFLAGS) -MT monolight/ui/libmonolight_la-monolight_animation_util.lo -MD -MP -MF monolight/ui/$(DEPDIR)/libmonolight_la-monolight_animation_util.Tpo -c -o monolight/ui/libmonolight_la-monolight_animation_util.lo `test -f 'monolight/ui/monolight_animation_util.c' || echo '$(srcdir)/'`monolight/ui/monolight_animation_util.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) monolight/ui/$(DEPDIR)/libmonolight_la-monolight_animation_util.Tpo monolight/ui/$(DEPDIR)/libmonolight_la-monolight_animation_util.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='monolight/ui/monolight_animation_util.c' object='monolight/ui/libmonolight_la-monolight_animation_util.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonolight_la_CFLAGS) $(CFLAGS) -c -o monolight/ui/libmonolight_la-monolight_animation_util.lo `test -f 'monolight/ui/monolight_animation_util.c' || echo '$(srcdir)/'`monolight/ui/monolight_animation_util.c
 
 monolight/led-monolight_main.o: monolight/monolight_main.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(monolight_led_CFLAGS) $(CFLAGS) -MT monolight/led-monolight_main.o -MD -MP -MF monolight/$(DEPDIR)/led-monolight_main.Tpo -c -o monolight/led-monolight_main.o `test -f 'monolight/monolight_main.c' || echo '$(srcdir)/'`monolight/monolight_main.c
@@ -1237,6 +1252,7 @@ distclean: distclean-recursive
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
 		-rm -f monolight/$(DEPDIR)/led-monolight_main.Po
 	-rm -f monolight/$(DEPDIR)/test-monolight_test.Po
+	-rm -f monolight/ui/$(DEPDIR)/libmonolight_la-monolight_animation_util.Plo
 	-rm -f monolight/ui/$(DEPDIR)/libmonolight_la-monolight_config_dialog.Plo
 	-rm -f monolight/ui/$(DEPDIR)/libmonolight_la-monolight_drawing_area.Plo
 	-rm -f monolight/ui/$(DEPDIR)/libmonolight_la-monolight_menu_bar.Plo
@@ -1292,6 +1308,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -rf $(top_srcdir)/autom4te.cache
 		-rm -f monolight/$(DEPDIR)/led-monolight_main.Po
 	-rm -f monolight/$(DEPDIR)/test-monolight_test.Po
+	-rm -f monolight/ui/$(DEPDIR)/libmonolight_la-monolight_animation_util.Plo
 	-rm -f monolight/ui/$(DEPDIR)/libmonolight_la-monolight_config_dialog.Plo
 	-rm -f monolight/ui/$(DEPDIR)/libmonolight_la-monolight_drawing_area.Plo
 	-rm -f monolight/ui/$(DEPDIR)/libmonolight_la-monolight_menu_bar.Plo

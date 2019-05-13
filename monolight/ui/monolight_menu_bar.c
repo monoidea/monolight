@@ -21,6 +21,8 @@
 
 #include <monolight/ui/monolight_window.h>
 
+#include <unistd.h>
+
 #include <monolight/i18n.h>
 
 void monolight_menu_bar_class_init(MonolightMenuBarClass *menu_bar);
@@ -191,13 +193,44 @@ monolight_menu_bar_disconnect_callback(GtkWidget *widget, MonolightMenuBar *menu
 {
   MonolightWindow *window;
 
+  unsigned char *buffer;
+  unsigned char *packet;
+
+  guint buffer_length;
+
   static const unsigned char *disable_peak_message = "/meter\x00\x00,sF\x00/AgsSoundProvider/AgsAudio[\"spectrometer\"]/AgsInput[0-1]/AgsPeakChannel[0]/AgsPort[\"./magnitude-buffer[0]\"]:value\x00\x00\x00";
 
   static const guint disable_peak_message_size = 128;
 
   window = gtk_widget_get_toplevel(menu_bar);
 
-  //TODO:JK: implement me
+  /* disable meter */
+  packet = (unsigned char *) malloc((4 + disable_peak_message_size) * sizeof(unsigned char));
+
+  ags_osc_buffer_util_put_int32(packet,
+                                disable_peak_message_size);
+
+  memcpy(packet + 4, disable_peak_message, (disable_peak_message_size) * sizeof(unsigned char));
+
+  buffer = ags_osc_util_slip_encode(packet,
+				    4 + disable_peak_message_size,
+				    &buffer_length);
+   
+  ags_osc_client_write_bytes(window->osc_client,
+			     buffer, buffer_length);
+
+  /* close fd */
+  if(window->osc_client->ip4_fd != -1){
+    close(window->osc_client->ip4_fd);
+     
+    window->osc_client->ip4_fd = -1;
+  }
+   
+  if(window->osc_client->ip6_fd != -1){
+    close(window->osc_client->ip6_fd);
+    
+    window->osc_client->ip6_fd = -1;
+  }
 }
 
 /**

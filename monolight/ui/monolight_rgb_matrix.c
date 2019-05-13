@@ -19,6 +19,11 @@
 
 #include <monolight/ui/monolight_rgb_matrix.h>
 
+#include <ags/libags.h>
+#include <ags/libags-audio.h>
+
+#include <stdlib.h>
+
 #include <monolight/i18n.h>
 
 void monolight_rgb_matrix_class_init(MonolightRGBMatrixClass *rgb_matrix);
@@ -83,7 +88,26 @@ monolight_rgb_matrix_class_init(MonolightRGBMatrixClass *rgb_matrix)
 void
 monolight_rgb_matrix_init(MonolightRGBMatrix *rgb_matrix)
 {
-  //TODO:JK: implement me
+  rgb_matrix->flags = 0;
+  
+  rgb_matrix->audio_channels = AGS_SOUNDCARD_DEFAULT_PCM_CHANNELS;
+  
+  rgb_matrix->samplerate = AGS_SOUNDCARD_DEFAULT_SAMPLERATE;
+  rgb_matrix->buffer_size = AGS_SOUNDCARD_DEFAULT_BUFFER_SIZE;
+  rgb_matrix->format = AGS_SOUNDCARD_DOUBLE;
+
+  rgb_matrix->parallel_count = MONOLIGHT_RGB_MATRIX_DEFAULT_PARALLEL_COUNT;
+  rgb_matrix->daisy_chained_count = MONOLIGHT_RGB_MATRIX_DEFAULT_DAISY_CHAINED_COUNT;
+
+  rgb_matrix->width = MONOLIGHT_RGB_MATRIX_DEFAULT_WIDTH;
+  rgb_matrix->height = MONOLIGHT_RGB_MATRIX_DEFAULT_HEIGHT;
+
+  rgb_matrix->pixel_format = MONOLIGHT_RGB_MATRIX_PIXEL_FORMAT_RGB24;
+  rgb_matrix->pixel_buffer = (guint32 *) malloc(rgb_matrix->parallel_count *
+						rgb_matrix->daisy_chained_count *
+						rgb_matrix->width *
+						rgb_matrix->height *
+						sizeof(guint32));
 }
 
 void
@@ -93,8 +117,21 @@ monolight_rgb_matrix_finalize(GObject *gobject)
 
   rgb_matrix = (MonolightRGBMatrix *) gobject;
 
+  if(rgb_matrix->pixel_buffer != NULL){
+    free(rgb_matrix->pixel_buffer);
+  }
+  
   /* call parent */
   G_OBJECT_CLASS(monolight_rgb_matrix_parent_class)->finalize(gobject);
+}
+
+void
+monolight_rgb_matrix_render_magnitude(MonolightRGBMatrix *rgb_matrix,
+				      guint audio_channel,
+				      gdouble *magnitude_buffer,
+				      guint buffer_size)
+{
+  //TODO:JK: implement me
 }
 
 /**

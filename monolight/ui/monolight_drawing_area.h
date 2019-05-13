@@ -43,6 +43,12 @@ typedef struct _MonolightDrawingAreaClass MonolightDrawingAreaClass;
 struct _MonolightDrawingArea
 {
   GtkWidget widget;
+
+  guint audio_channels;
+  
+  guint samplerate;
+  guint buffer_size;
+  guint format;
 };
 
 struct _MonolightDrawingAreaClass
@@ -51,6 +57,11 @@ struct _MonolightDrawingAreaClass
 };
 
 GType monolight_drawing_area_get_type(void);
+
+void monolight_drawing_area_render_magnitude(MonolightDrawingArea *drawing_area,
+					     guint audio_channel,
+					     gdouble *magnitude_buffer,
+					     guint buffer_size);
 
 MonolightDrawingArea* monolight_drawing_area_new();
 

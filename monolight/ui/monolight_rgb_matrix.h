@@ -53,6 +53,12 @@ struct _MonolightRGBMatrix
   GObject gobject;
 
   guint flags;
+
+  guint audio_channels;
+  
+  guint samplerate;
+  guint buffer_size;
+  guint format;
   
   guint parallel_count;
   guint daisy_chained_count;
@@ -70,6 +76,11 @@ struct _MonolightRGBMatrixClass
 };
 
 GType monolight_rgb_matrix_get_type(void);
+
+void monolight_rgb_matrix_render_magnitude(MonolightRGBMatrix *rgb_matrix,
+					   guint audio_channel,
+					   gdouble *magnitude_buffer,
+					   guint buffer_size);
 
 MonolightRGBMatrix* monolight_rgb_matrix_new();
 
