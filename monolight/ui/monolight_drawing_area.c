@@ -19,6 +19,9 @@
 
 #include <monolight/ui/monolight_drawing_area.h>
 
+#include <ags/libags.h>
+#include <ags/libags-audio.h>
+
 #include <monolight/i18n.h>
 
 void monolight_drawing_area_class_init(MonolightDrawingAreaClass *drawing_area);
@@ -111,6 +114,9 @@ monolight_drawing_area_init(MonolightDrawingArea *drawing_area)
   g_object_set(G_OBJECT(drawing_area),
 	       "app-paintable", TRUE,
 	       NULL);
+
+  drawing_area->samplerate = AGS_SOUNDCARD_DEFAULT_SAMPLERATE;
+  drawing_area->buffer_size = AGS_SOUNDCARD_DEFAULT_BUFFER_SIZE;
 
   //TODO:JK: implement me
 }
@@ -232,8 +238,9 @@ monolight_drawing_area_draw(MonolightDrawingArea *drawing_area)
 void
 monolight_drawing_area_render_magnitude(MonolightDrawingArea *drawing_area,
 					guint audio_channel,
-					gdouble *magnitude_buffer,
-					guint buffer_size)
+					guint samplerate,
+					guint buffer_size,
+					gdouble *magnitude_buffer)
 {
   //TODO:JK: implement me
 }

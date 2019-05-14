@@ -39,14 +39,29 @@
 #define MONOLIGHT_IS_WINDOW_CLASS(class)     (G_TYPE_CHECK_CLASS_TYPE((class), MONOLIGHT_TYPE_WINDOW))
 #define MONOLIGHT_WINDOW_GET_CLASS(obj)      (G_TYPE_INSTANCE_GET_CLASS((obj), MONOLIGHT_TYPE_WINDOW, MonolightWindowClass))
 
+#define MONOLIGHT_WINDOW_DEFAULT_AUDIO_CHANNELS (2)
+  
 typedef struct _MonolightWindow MonolightWindow;
 typedef struct _MonolightWindowClass MonolightWindowClass;
+
+typedef enum{
+  MONOLIGHT_WINDOW_DRAW_MAGNITUDE_BUFFER  = 1,
+}MonolightWindowFlags;
 
 struct _MonolightWindow
 {
   GtkWindow window;
 
+  guint flags;
+
   AgsOscClient *osc_client;
+
+  guint audio_channels;
+  
+  guint samplerate;
+  guint buffer_size;
+  
+  gdouble **magnitude_buffer;
   
   MonolightMenuBar *menu_bar;
 
@@ -61,6 +76,8 @@ struct _MonolightWindowClass
 };
 
 GType monolight_window_get_type(void);
+
+gboolean monolight_window_magnitude_buffer_queue_draw_timeout(GtkWidget *widget);
 
 MonolightWindow* monolight_window_new();
 

@@ -79,8 +79,9 @@ GType monolight_rgb_matrix_get_type(void);
 
 void monolight_rgb_matrix_render_magnitude(MonolightRGBMatrix *rgb_matrix,
 					   guint audio_channel,
-					   gdouble *magnitude_buffer,
-					   guint buffer_size);
+					   guint samplerate,
+					   guint buffer_size,
+					   gdouble *magnitude_buffer);
 
 MonolightRGBMatrix* monolight_rgb_matrix_new();
 

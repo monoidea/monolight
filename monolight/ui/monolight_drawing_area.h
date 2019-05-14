@@ -48,7 +48,6 @@ struct _MonolightDrawingArea
   
   guint samplerate;
   guint buffer_size;
-  guint format;
 };
 
 struct _MonolightDrawingAreaClass
@@ -60,8 +59,9 @@ GType monolight_drawing_area_get_type(void);
 
 void monolight_drawing_area_render_magnitude(MonolightDrawingArea *drawing_area,
 					     guint audio_channel,
-					     gdouble *magnitude_buffer,
-					     guint buffer_size);
+					     guint samplerate,
+					     guint buffer_size,
+					     gdouble *magnitude_buffer);
 
 MonolightDrawingArea* monolight_drawing_area_new();
 
