@@ -32,10 +32,14 @@
 #define MONOLIGHT_IS_DRAWING_AREA_CLASS(class)     (G_TYPE_CHECK_CLASS_TYPE((class), MONOLIGHT_TYPE_DRAWING_AREA))
 #define MONOLIGHT_DRAWING_AREA_GET_CLASS(obj)      (G_TYPE_INSTANCE_GET_CLASS((obj), MONOLIGHT_TYPE_DRAWING_AREA, MonolightDrawingAreaClass))
 
+#define MONOLIGHT_DRAWING_AREA_DEFAULT_AUDIO_CHANNELS (2)
+
 #define MONOLIGHT_DRAWING_AREA_DEFAULT_SCALE_FACTOR (8)
 
 #define MONOLIGHT_DRAWING_AREA_DEFAULT_WIDTH (96)
 #define MONOLIGHT_DRAWING_AREA_DEFAULT_HEIGHT (96)
+
+#define MONOLIGHT_DRAWING_AREA_TIME_LAPSE_DEFAULT_LENGTH (32)
 
 typedef struct _MonolightDrawingArea MonolightDrawingArea;
 typedef struct _MonolightDrawingAreaClass MonolightDrawingAreaClass;
@@ -48,6 +52,27 @@ struct _MonolightDrawingArea
   
   guint samplerate;
   guint buffer_size;
+
+  gchar **program;
+  guint program_count;
+  
+  gint position;
+  gint current_period;
+  
+  guint time_lapse_length;
+  
+  gint *time_lapse_period;
+  gint *time_lapse_program;
+  
+  gdouble *time_lapse_start_angle;
+  gdouble *time_lapse_end_angle;
+
+  gdouble *time_lapse_scale;
+
+  guint *time_lapse_red;
+  guint *time_lapse_green;
+  guint *time_lapse_blue;
+  guint *time_lapse_alpha;
 };
 
 struct _MonolightDrawingAreaClass

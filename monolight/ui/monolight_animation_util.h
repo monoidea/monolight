@@ -32,7 +32,7 @@ void monolight_animation_util_render_block_pulse(cairo_t *cr,
 						 guint buffer_start, guint buffer_end,
 						 guint x0, guint x1,
 						 guint width, guint height,
-						 gdouble angle,
+						 gdouble angle, gdouble scale,
 						 guint r, guint g, guint b, guint a);
 
 void monolight_animation_util_render_wave_pulse(cairo_t *cr,
@@ -42,7 +42,7 @@ void monolight_animation_util_render_wave_pulse(cairo_t *cr,
 						guint buffer_start, guint buffer_end,
 						guint x0, guint x1,
 						guint width, guint height,
-						gdouble angle,
+						gdouble angle, gdouble scale,
 						guint r, guint g, guint b, guint a);
 
 void monolight_animation_util_render_square(cairo_t *cr,
@@ -52,7 +52,7 @@ void monolight_animation_util_render_square(cairo_t *cr,
 					    guint buffer_start, guint buffer_end,
 					    guint x0, guint x1,
 					    guint width, guint height,
-					    gdouble angle,
+					    gdouble angle, gdouble scale,
 					    guint r, guint g, guint b, guint a);
 
 void monolight_animation_util_render_cross(cairo_t *cr,
@@ -62,13 +62,7 @@ void monolight_animation_util_render_cross(cairo_t *cr,
 					   guint buffer_start, guint buffer_end,
 					   guint x0, guint x1,
 					   guint width, guint height,
-					   gdouble angle,
+					   gdouble angle, gdouble scale,
 					   guint r, guint g, guint b, guint a);
-
-void monolight_animation_util_render_magnitude(cairo_t *cr,
-					       guint samplerate,
-					       guint buffer_size,
-					       gdouble *magnitude_buffer,
-  					       guint width, guint height);
 
 #endif /*__MONOLIGHT_ANIMATION_UTIL_H__*/
