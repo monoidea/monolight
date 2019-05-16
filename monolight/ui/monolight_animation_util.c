@@ -19,6 +19,7 @@
 
 #include <monolight/ui/monolight_animation_util.h>
 
+#include <stdlib.h>
 #include <math.h>
 
 void
@@ -32,7 +33,66 @@ monolight_animation_util_render_block_pulse(cairo_t *cr,
 					    gdouble angle, gdouble scale,
 					    guint r, guint g, guint b, guint a)
 {
-  //TODO:JK: implement me
+  gdouble line_width[5];
+
+  gdouble correction;
+  gdouble frequency;
+  gdouble magnitude;  
+  gdouble a_pos_x0, a_pos_y0;
+  gdouble a_width, a_height;
+  gdouble max_line_width;
+  guint nth;
+  guint i, k;
+
+  width *= scale;
+  height *= scale;
+  
+  max_line_width = scale * 2.0;
+
+  for(i = 0; i < 5; i++){
+    line_width[i] = max_line_width;
+  }
+
+  correction = (gdouble) samplerate / (gdouble) buffer_size;
+  magnitude = 0.0;
+  
+  for(nth = buffer_start + 1, i = 0, k = 0; i < buffer_end - buffer_start && nth < buffer_size / 2; i++, nth++){
+    frequency = nth * correction;
+    
+    magnitude += magnitude_buffer[nth];
+    k++;
+
+    if(nth % ((buffer_end - buffer_start) / 5) == 0){
+      line_width[(guint) floor((double) i / (double) (buffer_end - buffer_start) * 5.0)] *= (magnitude / (buffer_end - buffer_start));
+
+      magnitude = 0.0;
+      k = 0;
+    }
+  }
+
+  cairo_set_source_rgba(cr,
+			r, g, b, a);
+
+  for(i = 0; i < 5; i++){
+    gdouble length;
+    
+    /* line width */
+    cairo_set_line_width(cr,
+			 line_width[i]);
+
+    length = (gdouble) i * (gdouble) (rand() % (width / 5));
+    
+    a_pos_x0 = ((gdouble) width / 2.0) - (length / 2.0);
+    a_pos_y0 = ((gdouble) height / 2.0) - (length / 2.0);
+
+    a_width = length;
+    a_height = length;
+    
+    cairo_rectangle(cr,
+		    a_pos_x0, a_pos_y0,
+		    a_width, a_height);
+    cairo_stroke(cr);
+  }
 }
 
 void
@@ -46,7 +106,62 @@ monolight_animation_util_render_wave_pulse(cairo_t *cr,
 					   gdouble angle, gdouble scale,
 					   guint r, guint g, guint b, guint a)
 {
-  //TODO:JK: implement me
+  gdouble line_width[5];
+
+  gdouble correction;
+  gdouble frequency;
+  gdouble magnitude;  
+  gdouble a_pos_x0, a_pos_y0;
+  gdouble a_radius;
+  gdouble max_line_width;
+  guint nth;
+  guint i, k;
+  
+  width *= scale;
+  height *= scale;
+  
+  max_line_width = scale * 2.0;
+
+  for(i = 0; i < 5; i++){
+    line_width[i] = max_line_width;
+  }
+
+  correction = (gdouble) samplerate / (gdouble) buffer_size;
+  magnitude = 0.0;
+  
+  for(nth = buffer_start + 1, i = 0, k = 0; i < buffer_end - buffer_start && nth < buffer_size / 2; i++, nth++){
+    frequency = nth * correction;
+    
+    magnitude += magnitude_buffer[nth];
+    k++;
+
+    if(nth % ((buffer_end - buffer_start) / 5) == 0){
+      line_width[(guint) floor((double) i / (double) (buffer_end - buffer_start) * 5.0)] *= (magnitude / (buffer_end - buffer_start));
+
+      magnitude = 0.0;
+      k = 0;
+    }
+  }
+
+  cairo_set_source_rgba(cr,
+			r, g, b, a);
+
+  for(i = 0; i < 5; i++){
+    /* line width */
+    cairo_set_line_width(cr,
+			 line_width[i]);
+
+    a_pos_x0 = (gdouble) width / 2.0;
+    a_pos_y0 = (gdouble) height / 2.0;
+
+    a_radius = (gdouble) i * (gdouble) (rand() % (width / 5));
+    
+    cairo_arc(cr,
+	      a_pos_x0, a_pos_y0,
+	      a_radius,
+	      0.0, 2.0 * M_PI);
+    cairo_stroke(cr);
+  }
 }
 
 void
@@ -134,16 +249,16 @@ monolight_animation_util_render_square(cairo_t *cr,
     case 1:
     {
       a_x0 = ((gdouble) width * 0.25) - line_length[0];
-      a_y0 = ((gdouble) height * 0.75) - line_length[0];
+      a_y0 = ((gdouble) height * 0.75) + line_length[0];
 
       b_x0 = ((gdouble) width * 0.25) - line_length[1];
-      b_y0 = ((gdouble) height * 0.75) + line_length[1];
+      b_y0 = ((gdouble) height * 0.75) - line_length[1];
 
       c_x0 = ((gdouble) width * 0.25) + line_length[2];
-      c_y0 = ((gdouble) height * 0.75) + line_length[2];
+      c_y0 = ((gdouble) height * 0.75) - line_length[2];
 
-      d_x0 = ((gdouble) width * 0.25) + line_length[3];
-      d_y0 = ((gdouble) height * 0.75) - line_length[3];
+      d_x0 = ((gdouble) width * 0.25) - line_length[3];
+      d_y0 = ((gdouble) height * 0.75) + line_length[3];
 
       e_x0 = ((gdouble) width * 0.25) - (line_length[4] / 2.0);
       e_y0 = ((gdouble) height * 0.75) - (line_length[4] / 2.0);
@@ -151,13 +266,13 @@ monolight_animation_util_render_square(cairo_t *cr,
     break;
     case 2:
     {
-      a_x0 = ((gdouble) width * 0.75) - line_length[0];
-      a_y0 = ((gdouble) height * 0.75) - line_length[0];
+      a_x0 = ((gdouble) width * 0.75) + line_length[0];
+      a_y0 = ((gdouble) height * 0.75) + line_length[0];
 
       b_x0 = ((gdouble) width * 0.75) - line_length[1];
-      b_y0 = ((gdouble) height * 0.75) + line_length[1];
+      b_y0 = ((gdouble) height * 0.75) - line_length[1];
 
-      c_x0 = ((gdouble) width * 0.75) + line_length[2];
+      c_x0 = ((gdouble) width * 0.75) - line_length[2];
       c_y0 = ((gdouble) height * 0.75) + line_length[2];
 
       d_x0 = ((gdouble) width * 0.75) + line_length[3];
@@ -169,17 +284,17 @@ monolight_animation_util_render_square(cairo_t *cr,
     break;
     case 3:
     {
-      a_x0 = ((gdouble) width * 0.75) - line_length[0];
+      a_x0 = ((gdouble) width * 0.75) + line_length[0];
       a_y0 = ((gdouble) height * 0.25) - line_length[0];
 
-      b_x0 = ((gdouble) width * 0.75) - line_length[1];
+      b_x0 = ((gdouble) width * 0.75) + line_length[1];
       b_y0 = ((gdouble) height * 0.25) + line_length[1];
 
-      c_x0 = ((gdouble) width * 0.75) + line_length[2];
-      c_y0 = ((gdouble) height * 0.25) + line_length[2];
+      c_x0 = ((gdouble) width * 0.75) - line_length[2];
+      c_y0 = ((gdouble) height * 0.25) - line_length[2];
 
-      d_x0 = ((gdouble) width * 0.75) + line_length[3];
-      d_y0 = ((gdouble) height * 0.25) - line_length[3];
+      d_x0 = ((gdouble) width * 0.75) - line_length[3];
+      d_y0 = ((gdouble) height * 0.25) + line_length[3];
 
       e_x0 = ((gdouble) width * 0.75) - (line_length[4] / 2.0);
       e_y0 = ((gdouble) height * 0.25) - (line_length[4] / 2.0);
@@ -237,8 +352,6 @@ monolight_animation_util_render_square(cairo_t *cr,
   
     cairo_pop_group_to_source(cr);
   }
-
-  //TODO:JK: implement me
 }
 
 void
