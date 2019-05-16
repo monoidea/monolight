@@ -46,6 +46,7 @@ void monolight_drawing_area_show(GtkWidget *widget);
 void monolight_drawing_area_draw(MonolightDrawingArea *drawing_area);
 
 void monolight_drawing_area_delegate_render(MonolightDrawingArea *drawing_area,
+					    cairo_t *cr,
 					    gchar *program,
 					    guint samplerate,
 					    guint buffer_size,
@@ -131,6 +132,7 @@ monolight_drawing_area_init(MonolightDrawingArea *drawing_area)
   
   g_object_set(G_OBJECT(drawing_area),
 	       "app-paintable", TRUE,
+	       "double-buffered", TRUE,
 	       NULL);
 
   drawing_area->audio_channels = MONOLIGHT_DRAWING_AREA_DEFAULT_AUDIO_CHANNELS;
@@ -145,6 +147,8 @@ monolight_drawing_area_init(MonolightDrawingArea *drawing_area)
   drawing_area->program[2] = g_strdup("wave-pulse");
   drawing_area->program[3] = g_strdup("block-pulse");
   drawing_area->program[4] =  NULL;
+
+  drawing_area->program_count =  4;
 
   drawing_area->position = 0;
   drawing_area->current_period = 0;
@@ -325,6 +329,7 @@ monolight_drawing_area_draw(MonolightDrawingArea *drawing_area)
 
 void
 monolight_drawing_area_delegate_render(MonolightDrawingArea *drawing_area,
+				       cairo_t *cr,
 				       gchar *program,
 				       guint samplerate,
 				       guint buffer_size,
@@ -335,19 +340,12 @@ monolight_drawing_area_delegate_render(MonolightDrawingArea *drawing_area,
 				       gdouble angle, gdouble scale,
 				       guint r, guint g, guint b, guint a)
 {
-  cairo_t *cr;
-
   if(!MONOLIGHT_IS_DRAWING_AREA(drawing_area)){
     return;
   }
   
-  cr = gdk_cairo_create(GTK_WIDGET(drawing_area)->window);
-  
-  if(cr == NULL){
-    return;
-  }
-
-  cairo_push_group(cr);
+  width *= MONOLIGHT_DRAWING_AREA_DEFAULT_SCALE_FACTOR;
+  height *= MONOLIGHT_DRAWING_AREA_DEFAULT_SCALE_FACTOR;
   
   if(!g_ascii_strncasecmp(program,
 			  "cross",
@@ -398,12 +396,6 @@ monolight_drawing_area_delegate_render(MonolightDrawingArea *drawing_area,
 						angle, scale,
 						r, g, b, a);
   }
-
-  cairo_pop_group_to_source(cr);
-  cairo_paint(cr);
-
-  cairo_surface_mark_dirty(cairo_get_target(cr));
-  cairo_destroy(cr);
 }
 
 void
@@ -413,11 +405,34 @@ monolight_drawing_area_render_magnitude(MonolightDrawingArea *drawing_area,
 					guint buffer_size,
 					gdouble *magnitude_buffer)
 {
+  cairo_t *cr;
+
   guint i;
 
   if(!MONOLIGHT_IS_DRAWING_AREA(drawing_area)){
     return;
   }
+
+  cr = gdk_cairo_create(GTK_WIDGET(drawing_area)->window);
+  
+  if(cr == NULL){
+    return;
+  }
+  
+  cairo_push_group(cr);
+
+  /* clear with background color */
+  cairo_set_source_rgba(cr,
+			0.0,
+			0.0,
+			0.0,
+			0.25);
+
+  cairo_rectangle(cr,
+		  0.0, 0.0,
+		  MONOLIGHT_DRAWING_AREA_DEFAULT_SCALE_FACTOR * MONOLIGHT_DRAWING_AREA_DEFAULT_WIDTH, MONOLIGHT_DRAWING_AREA_DEFAULT_SCALE_FACTOR * MONOLIGHT_DRAWING_AREA_DEFAULT_HEIGHT);
+  
+  cairo_fill(cr);
 
   for(i = 0; i < drawing_area->program_count; i++){  
     if(((0x1 << i) & drawing_area->time_lapse_program[drawing_area->position]) != 0){
@@ -438,6 +453,7 @@ monolight_drawing_area_render_magnitude(MonolightDrawingArea *drawing_area,
       alpha = drawing_area->time_lapse_alpha[drawing_area->position];
       
       monolight_drawing_area_delegate_render(drawing_area,
+					     cr,
 					     drawing_area->program[i],
 					     samplerate,
 					     buffer_size,
@@ -462,6 +478,12 @@ monolight_drawing_area_render_magnitude(MonolightDrawingArea *drawing_area,
   if(drawing_area->position >= drawing_area->time_lapse_length){
     drawing_area->position = 0;
   }
+
+  cairo_pop_group_to_source(cr);
+  cairo_paint(cr);
+
+  cairo_surface_mark_dirty(cairo_get_target(cr));
+  cairo_destroy(cr);
 }
 
 /**

@@ -47,7 +47,7 @@ monolight_animation_util_render_block_pulse(cairo_t *cr,
   width *= scale;
   height *= scale;
   
-  max_line_width = scale * 2.0;
+  max_line_width = scale * 5.0;
 
   for(i = 0; i < 5; i++){
     line_width[i] = max_line_width;
@@ -59,11 +59,11 @@ monolight_animation_util_render_block_pulse(cairo_t *cr,
   for(nth = buffer_start + 1, i = 0, k = 0; i < buffer_end - buffer_start && nth < buffer_size / 2; i++, nth++){
     frequency = nth * correction;
     
-    magnitude += magnitude_buffer[nth];
+    magnitude += (magnitude_buffer[nth] / 100.0);
     k++;
 
     if(nth % ((buffer_end - buffer_start) / 5) == 0){
-      line_width[(guint) floor((double) i / (double) (buffer_end - buffer_start) * 5.0)] *= (magnitude / (buffer_end - buffer_start));
+      line_width[(guint) floor((double) i / (double) (buffer_end - buffer_start) * 5.0)] *= magnitude;
 
       magnitude = 0.0;
       k = 0;
@@ -71,7 +71,7 @@ monolight_animation_util_render_block_pulse(cairo_t *cr,
   }
 
   cairo_set_source_rgba(cr,
-			r, g, b, a);
+			r / 255.0, g / 255.0, b / 255.0, a / 255.0);
 
   for(i = 0; i < 5; i++){
     gdouble length;
@@ -120,7 +120,7 @@ monolight_animation_util_render_wave_pulse(cairo_t *cr,
   width *= scale;
   height *= scale;
   
-  max_line_width = scale * 2.0;
+  max_line_width = scale * 10.0;
 
   for(i = 0; i < 5; i++){
     line_width[i] = max_line_width;
@@ -132,11 +132,11 @@ monolight_animation_util_render_wave_pulse(cairo_t *cr,
   for(nth = buffer_start + 1, i = 0, k = 0; i < buffer_end - buffer_start && nth < buffer_size / 2; i++, nth++){
     frequency = nth * correction;
     
-    magnitude += magnitude_buffer[nth];
+    magnitude += (magnitude_buffer[nth] / 100.0);
     k++;
 
     if(nth % ((buffer_end - buffer_start) / 5) == 0){
-      line_width[(guint) floor((double) i / (double) (buffer_end - buffer_start) * 5.0)] *= (magnitude / (buffer_end - buffer_start));
+      line_width[(guint) floor((double) i / (double) (buffer_end - buffer_start) * 5.0)] *= magnitude;
 
       magnitude = 0.0;
       k = 0;
@@ -144,7 +144,7 @@ monolight_animation_util_render_wave_pulse(cairo_t *cr,
   }
 
   cairo_set_source_rgba(cr,
-			r, g, b, a);
+			r / 255.0, g / 255.0, b / 255.0, a / 255.0);
 
   for(i = 0; i < 5; i++){
     /* line width */
@@ -197,7 +197,7 @@ monolight_animation_util_render_square(cairo_t *cr,
   width *= scale;
   height *= scale;
   
-  max_line_length = scale * 12.0;
+  max_line_length = scale * (width / 4.0);
 
   for(i = 0; i < 5; i++){
     line_length[i] = max_line_length;
@@ -209,11 +209,11 @@ monolight_animation_util_render_square(cairo_t *cr,
   for(nth = buffer_start + 1, i = 0, k = 0; i < buffer_end - buffer_start && nth < buffer_size / 2; i++, nth++){
     frequency = nth * correction;
     
-    magnitude += magnitude_buffer[nth];
+    magnitude += (magnitude_buffer[nth] / 100.0);
     k++;
 
     if(nth % ((buffer_end - buffer_start) / 5) == 0){
-      line_length[(guint) floor((double) i / (double) (buffer_end - buffer_start) * 5.0)] *= (magnitude / (buffer_end - buffer_start));
+      line_length[(guint) floor((double) i / (double) (buffer_end - buffer_start) * 5.0)] *= magnitude;
 
       magnitude = 0.0;
       k = 0;
@@ -221,12 +221,20 @@ monolight_animation_util_render_square(cairo_t *cr,
   }
 
   cairo_set_source_rgba(cr,
-			r, g, b, a);
+			r / 255.0, g / 255.0, b / 255.0, a / 255.0);
 
+  cairo_save(cr);
 
-  for(i = 0; i < 4; i++){
-    cairo_push_group(cr);
-    
+  cairo_translate(cr,
+		  width / 2.0, height / 2.0);
+  cairo_rotate(cr,
+	       angle);
+  cairo_translate(cr,
+		  -1.0 * width / 2.0, -1.0 * height / 2.0);
+
+  for(i = 0; i < 4; i++){    
+    cairo_save(cr);
+
     switch(i){
     case 0:
     {
@@ -316,7 +324,7 @@ monolight_animation_util_render_square(cairo_t *cr,
 
     e_width = line_length[4];
     e_height = line_length[4];
-
+    
     /* square a - #0 */
     cairo_rectangle(cr,
 		    a_x0, a_y0,
@@ -346,12 +354,11 @@ monolight_animation_util_render_square(cairo_t *cr,
 		    e_x0, e_y0,
 		    e_width, e_height);
     cairo_fill(cr);  
-  
-    cairo_rotate(cr,
-		 angle);
-  
-    cairo_pop_group_to_source(cr);
+
+    cairo_restore(cr);
   }
+
+  cairo_restore(cr);
 }
 
 void
@@ -393,11 +400,13 @@ monolight_animation_util_render_cross(cairo_t *cr,
   for(nth = buffer_start + 1, i = 0, k = 0; i < buffer_end - buffer_start && nth < buffer_size / 2; i++, nth++){
     frequency = nth * correction;
     
-    magnitude += magnitude_buffer[nth];
+    magnitude += (magnitude_buffer[nth] / 100.0);
     k++;
 
     if(nth % ((buffer_end - buffer_start) / 5) == 0){
-      line_width[(guint) floor((double) i / (double) (buffer_end - buffer_start) * 5.0)] *= (magnitude / (buffer_end - buffer_start));
+      if(magnitude != 0.0){
+	line_width[(guint) floor((double) i / (double) (buffer_end - buffer_start) * 5.0)] *= magnitude;
+      }
 
       magnitude = 0.0;
       k = 0;
@@ -405,47 +414,45 @@ monolight_animation_util_render_cross(cairo_t *cr,
   }
 
   cairo_set_source_rgba(cr,
-			r, g, b, a);
+			r / 255.0, g / 255.0, b / 255.0, a / 255.0);
 
-  for(i = 0; i < 5; i++){
-    /* cross */
-    if((angle >= 0.0 &&
-	angle < 0.25 * (2.0 * M_PI)) ||
-       (angle >= 0.5 * (2.0 * M_PI) &&
-	angle < 0.75 * (2.0 * M_PI))){
-      /* line a */
-      a_pos_x0 = ((gdouble) width / 2.0 * (5 / (5 - i))) + ((gdouble) height / 2.0) * tan(angle + ((i / 5) * 0.25 * (2.0 * M_PI)));
-      a_pos_y0 = (gdouble) height - (gdouble) height * (5 / (5 - i));
+  cairo_save(cr);
 
-      a_pos_x1 = ((gdouble) width / 2.0 * (5 / (5 - i))) - ((gdouble) height / 2.0) * tan(angle);
-      a_pos_y1 = (gdouble) height * (5 / (5 - i));
+  cairo_translate(cr,
+		  width / 2.0, height / 2.0);
+  cairo_rotate(cr,
+	       angle);
+  cairo_translate(cr,
+		  -1.0 * width / 2.0, -1.0 * height / 2.0);
 
-      /* line b */
-      b_pos_x0 = (gdouble) width - (gdouble) width * (5 / (5 - i));
-      b_pos_y0 = ((gdouble) height / 2.0 * (5 / (5 - i))) + ((gdouble) width / 2.0) * tan(angle + 0.25 * (2.0 * M_PI));
+  for(i = 0; i < 5; i++){    
+    /* line a */
+    a_pos_x0 = 0.0;
+    a_pos_y0 = 0.0;
 
-      b_pos_x1 = (gdouble) width * (5 / (5 - i));
-      b_pos_y1 = ((gdouble) height / 2.0 * (5 / (5 - i))) - ((gdouble) width / 2.0) * tan(angle + 0.25 * (2.0 * M_PI));
-    }else{
-      /* line a */
-      a_pos_x0 = (gdouble) width - (gdouble) width * (5 / (5 - i));
-      a_pos_y0 = ((gdouble) height / 2.0 * (5 / (5 - i))) + ((gdouble) width / 2.0) * tan(angle);
+    a_pos_x1 = (gdouble) width;
+    a_pos_y1 = (gdouble) height;
 
-      a_pos_x1 = (gdouble) width * (5 / (5 - i));
-      a_pos_y1 = ((gdouble) height / 2.0 * (5 / (5 - i))) - ((gdouble) width / 2.0) * tan(angle);
+    /* line b */
+    b_pos_x0 = width;
+    b_pos_y0 = 0.0;
 
-      /* line b */
-      b_pos_x0 = ((gdouble) width / 2.0 * (5 / (5 - i))) + ((gdouble) height / 2.0) * tan(angle + 0.25 * (2.0 * M_PI));
-      b_pos_y0 = (gdouble) height - (gdouble) height * (5 / (5 - i));
-
-      b_pos_x1 = ((gdouble) width / 2.0 * (5 / (5 - i))) - ((gdouble) height / 2.0) * tan(angle + 0.25 * (2.0 * M_PI));
-      b_pos_y1 = (gdouble) height * (5 / (5 - i));
-    }
+    b_pos_x1 = 0.0;
+    b_pos_y1 = (gdouble) height;
 
     /* line width */
     cairo_set_line_width(cr,
 			 line_width[i]);
     
+    cairo_save(cr);
+    
+    cairo_translate(cr,
+		    width / 2.0, height / 2.0);
+    cairo_rotate(cr,
+		 ((i / 5.0) / 4.0) * (2.0 * M_PI));
+    cairo_translate(cr,
+		    -1.0 * width / 2.0, -1.0 * height / 2.0);
+
     /* line a */
     cairo_move_to(cr,
 		  a_pos_x0, a_pos_y0);
@@ -463,5 +470,9 @@ monolight_animation_util_render_cross(cairo_t *cr,
 		  b_pos_x1, b_pos_y1);
 
     cairo_stroke(cr);
+
+    cairo_restore(cr);
   }
+
+  cairo_restore(cr);
 }

@@ -103,7 +103,7 @@ monolight_window_init(MonolightWindow *window)
 
   window->audio_channels = MONOLIGHT_WINDOW_DEFAULT_AUDIO_CHANNELS;
 
-  window->samplerate = AGS_SOUNDCARD_DEFAULT_SAMPLERATE;
+  window->samplerate = 44100;
   window->buffer_size = AGS_SOUNDCARD_DEFAULT_BUFFER_SIZE;
 
   window->magnitude_buffer = (gdouble **) malloc(window->audio_channels * sizeof(gdouble *));
@@ -145,7 +145,7 @@ monolight_window_init(MonolightWindow *window)
   /* magnitude buffer queue draw */
   window->flags |= MONOLIGHT_WINDOW_DRAW_MAGNITUDE_BUFFER;
 
-  g_timeout_add(1000 / 30, (GSourceFunc) monolight_window_magnitude_buffer_queue_draw_timeout, (gpointer) window);
+  g_timeout_add(1000 / 60, (GSourceFunc) monolight_window_magnitude_buffer_queue_draw_timeout, (gpointer) window);
 }
 
 void
@@ -210,6 +210,7 @@ monolight_window_magnitude_buffer_queue_draw_timeout(GtkWidget *widget)
       guint offset;
       guint n_audio_channels;
       guint data_length;
+      guint packet_length;
       guint type_tag_length;
       guint path_length;
       guint audio_channel;
@@ -224,45 +225,55 @@ monolight_window_magnitude_buffer_queue_draw_timeout(GtkWidget *widget)
 	current_data = ags_osc_client_read_bytes(window->osc_client,
 						 &data_length);
 
-	if(data_length >= 8){
+	if(current_data != NULL &&
+	   data_length >= 8){
+	  current_packet = ags_osc_util_slip_decode(current_data,
+						    data_length,
+						    &packet_length);
+
 	  offset = 4;
 	  ags_osc_buffer_util_get_message(current_packet + offset,
 					  &address_pattern, &type_tag);
 
 	  type_tag_length = strlen(type_tag);
-	  
+
 	  if(!g_strcmp0(address_pattern,
-			"/meter") &&
-	     type_tag_length == 3 + (window->buffer_size / 2)){
+			"/meter")){
 	    offset += 8;
-	    offset += (guint) 4 * ceil((gdouble) type_tag_length / 4.0);
+	    offset += (guint) 4 * ceil(((gdouble) type_tag_length + 1.0) / 4.0);
 	    
-	    ags_osc_buffer_util_get_string(current_packet,
+	    ags_osc_buffer_util_get_string(current_packet + offset,
 					   &path, &path_length);
 
 	    audio_channel = 0;
-	    sscanf("/AgsSoundProvider/AgsAudio[\"spectrometer\"]/AgsInput[%u]/AgsPeakChannel[0]/AgsPort[\"./magnitude-buffer[0]\"]:value",
-		   path,
+	    sscanf(path + 29,
+		   "/AgsInput[%u]/AgsAnalyseChannel[0]/AgsPort[\"./magnitude-buffer[0]\"]:value",
 		   &audio_channel);
-
-	    offset += (guint) 4 * ceil((gdouble) path_length / 4.0);
 	    
-	    for(i = 0; i < window->buffer_size / 2; i++){
+	    offset += (guint) 4 * ceil(((gdouble) path_length + 1.0) / 4.0);
+	    
+	    for(i = 0; i < window->buffer_size / 2 && offset < packet_length; i++){
 	      ags_osc_buffer_util_get_double(current_packet + offset,
 					     &(window->magnitude_buffer[audio_channel][i]));
-
+      
 	      offset += sizeof(gdouble);
 	    }
 	    
 	    n_audio_channels++;
 	  }
+
+	  if(current_packet != NULL){
+	    free(current_packet);
+
+	    current_packet = NULL;
+	  }
 	}
-	
-	if(n_audio_channels == MONOLIGHT_WINDOW_DEFAULT_AUDIO_CHANNELS){
+
+	if(n_audio_channels >= MONOLIGHT_WINDOW_DEFAULT_AUDIO_CHANNELS){
 	  success = TRUE;
 	}
       }
-
+      
       for(i = 0; i < window->audio_channels; i++){
 	monolight_drawing_area_render_magnitude(window->drawing_area,
 						i,
