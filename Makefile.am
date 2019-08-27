@@ -49,7 +49,7 @@ libmonolight_la_HEADERS_0 = $(libmonolight_ui_h_sources)
 libmonolight_la_SOURCES = $(libmonolight_la_HEADERS_0) $(libmonolight_ui_c_sources)
 
 # library libmonolight
-libmonolight_la_CFLAGS = $(CFLAGS) $(COMPILER_FLAGS) $(WARN_FLAGS) -I./ -I/usr/include $(GOBJECT_CFLAGS) $(GDKPIXBUF_CFLAGS) $(CAIRO_CFLAGS) $(GTK_CFLAGS) $(LIBAGS_CFLAGS) $(LIBAGS_AUDIO_CFLAGS)
+libmonolight_la_CFLAGS = $(CFLAGS) $(COMPILER_FLAGS) $(WARN_FLAGS) -I./ -I/usr/include -I./rpi-rgb-led-matrix/include $(GOBJECT_CFLAGS) $(GDKPIXBUF_CFLAGS) $(CAIRO_CFLAGS) $(GTK_CFLAGS) $(LIBAGS_CFLAGS) $(LIBAGS_AUDIO_CFLAGS)
 libmonolight_la_LDFLAGS = $(LDFLAGS) -version-info 1:0:0 -shared -fPIC -Wl,-soname,libmonolight.so -pthread
 libmonolight_la_LIBADD = -ldl -lm $(GOBJECT_LIBS) $(GDKPIXBUF_LIBS) $(CAIRO_LIBS) $(GTK_LIBS) $(LIBAGS_LIBS) $(LIBAGS_AUDIO_LIBS)
 

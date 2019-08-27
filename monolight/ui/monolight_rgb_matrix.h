@@ -23,6 +23,13 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include <cairo.h>
+
+#include <ags/libags.h>
+#include <ags/libags-audio.h>
+
+#include <led-matrix-c.h>
+
 #define MONOLIGHT_TYPE_RGB_MATRIX                (monolight_rgb_matrix_get_type())
 #define MONOLIGHT_RGB_MATRIX(obj)                (G_TYPE_CHECK_INSTANCE_CAST((obj), MONOLIGHT_TYPE_RGB_MATRIX, MonolightRGBMatrix))
 #define MONOLIGHT_RGB_MATRIX_CLASS(class)        (G_TYPE_CHECK_CLASS_CAST((class), MONOLIGHT_TYPE_RGB_MATRIX, MonolightRGBMatrixClass))
@@ -30,23 +37,28 @@
 #define MONOLIGHT_IS_RGB_MATRIX_CLASS(class)     (G_TYPE_CHECK_CLASS_TYPE((class), MONOLIGHT_TYPE_RGB_MATRIX))
 #define MONOLIGHT_RGB_MATRIX_GET_CLASS(obj)      (G_TYPE_INSTANCE_GET_CLASS((obj), MONOLIGHT_TYPE_RGB_MATRIX, MonolightRGBMatrixClass))
 
-#define MONOLIGHT_RGB_MATRIX_DEFAULT_PARALLEL_COUNT (3)
-#define MONOLIGHT_RGB_MATRIX_DEFAULT_DAISY_CHAINED_COUNT (3)
+#define MONOLIGHT_RGB_MATRIX_DEFAULT_AUDIO_CHANNELS (2)  
 
-#define MONOLIGHT_RGB_MATRIX_DEFAULT_WIDTH (32)
-#define MONOLIGHT_RGB_MATRIX_DEFAULT_HEIGHT (32)
+#define MONOLIGHT_RGB_MATRIX_DEFAULT_ROWS (32)
+#define MONOLIGHT_RGB_MATRIX_DEFAULT_COLS (32)
+
+#define MONOLIGHT_RGB_MATRIX_DEFAULT_CHAIN_LENGTH (9)
+#define MONOLIGHT_RGB_MATRIX_DEFAULT_PARALLEL (1)
+
+#define MONOLIGHT_RGB_MATRIX_DEFAULT_WIDTH (3 * MONOLIGHT_RGB_MATRIX_DEFAULT_COLS)
+#define MONOLIGHT_RGB_MATRIX_DEFAULT_HEIGHT (3 * MONOLIGHT_RGB_MATRIX_DEFAULT_ROWS)
+
+#define MONOLIGHT_RGB_MATRIX_DEFAULT_SCALE_FACTOR (1)
+
+#define MONOLIGHT_RGB_MATRIX_TIME_LAPSE_DEFAULT_LENGTH (32)
 
 typedef struct _MonolightRGBMatrix MonolightRGBMatrix;
 typedef struct _MonolightRGBMatrixClass MonolightRGBMatrixClass;
 
 typedef enum{
-  MONOLIGHT_RGB_MATRIX_RUNNING   = 1,
+  MONOLIGHT_RGB_MATRIX_RUNNING                = 1,
+  MONOLIGHT_RGB_MATRIX_DRAW_MAGNITUDE_BUFFER  = 1 <<  1,
 }MonolightRGBMatrixFlags;
-
-typedef enum{
-  MONOLIGHT_RGB_MATRIX_PIXEL_FORMAT_RGB24,
-  MONOLIGHT_RGB_MATRIX_PIXEL_FORMAT_RGBA32,
-}MonolightRGBMatrixPixelFormat;
 
 struct _MonolightRGBMatrix
 {
@@ -58,16 +70,50 @@ struct _MonolightRGBMatrix
   
   guint samplerate;
   guint buffer_size;
-  guint format;
-  
-  guint parallel_count;
-  guint daisy_chained_count;
-  
-  guint width;
-  guint height;
 
-  guint pixel_format;
-  void *pixel_buffer;
+  gdouble **magnitude_buffer;
+
+  int rows;
+  int cols;
+  
+  int chain_length;
+  int parallel;
+
+  gint width;
+  gint height;
+
+  int argc;
+  char **argv;
+  
+  struct RGBLedMatrixOptions options;
+  struct RGBLedMatrix *led_matrix;
+  
+  struct LedCanvas *offscreen_canvas;
+
+  AgsOscClient *osc_client;
+
+  cairo_t *cr;
+
+  gchar **program;
+  guint program_count;
+  
+  gint position;
+  gint current_period;
+  
+  guint time_lapse_length;
+  
+  gint *time_lapse_period;
+  gint *time_lapse_program;
+  
+  gdouble *time_lapse_start_angle;
+  gdouble *time_lapse_end_angle;
+
+  gdouble *time_lapse_scale;
+
+  guint *time_lapse_red;
+  guint *time_lapse_green;
+  guint *time_lapse_blue;
+  guint *time_lapse_alpha;
 };
 
 struct _MonolightRGBMatrixClass
@@ -77,11 +123,20 @@ struct _MonolightRGBMatrixClass
 
 GType monolight_rgb_matrix_get_type(void);
 
+void monolight_rgb_matrix_start(MonolightRGBMatrix *rgb_matrix);
+void monolight_rgb_matrix_stop(MonolightRGBMatrix *rgb_matrix);
+
+uint8_t monolight_rgb_matrix_get_brightness(MonolightRGBMatrix *rgb_matrix);
+void monolight_rgb_matrix_set_brightness(MonolightRGBMatrix *rgb_matrix,
+					 uint8_t brightness);
+
 void monolight_rgb_matrix_render_magnitude(MonolightRGBMatrix *rgb_matrix,
 					   guint audio_channel,
 					   guint samplerate,
 					   guint buffer_size,
 					   gdouble *magnitude_buffer);
+
+gboolean monolight_rgb_matrix_magnitude_buffer_queue_draw_timeout(GObject *gobject);
 
 MonolightRGBMatrix* monolight_rgb_matrix_new();
 
