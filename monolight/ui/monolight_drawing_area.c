@@ -191,19 +191,37 @@ monolight_drawing_area_init(MonolightDrawingArea *drawing_area)
   drawing_area->time_lapse_red = (guint *) malloc(drawing_area->time_lapse_length * sizeof(guint));
   
   for(i = 0; i < drawing_area->time_lapse_length; i++){
-    drawing_area->time_lapse_red[i] = 255;
+    if(i < 1.0 * drawing_area->time_lapse_length / 3.0){
+      drawing_area->time_lapse_red[i] = 255;
+    }else if(i < 2.0 * drawing_area->time_lapse_length / 3.0){
+      drawing_area->time_lapse_red[i] = 255 - (((gdouble) i * (drawing_area->time_lapse_length / 6.0)) * 255.0);
+    }else{
+      drawing_area->time_lapse_red[i] = 0;
+    }
   }
 
   drawing_area->time_lapse_green = (guint *) malloc(drawing_area->time_lapse_length * sizeof(guint));
   
   for(i = 0; i < drawing_area->time_lapse_length; i++){
-    drawing_area->time_lapse_green[i] = 255;
+    if(i < 1.0 * drawing_area->time_lapse_length / 3.0){
+      drawing_area->time_lapse_green[i] = 0;
+    }else if(i < 2.0 * drawing_area->time_lapse_length / 3.0){
+      drawing_area->time_lapse_green[i] = 255;
+    }else{
+      drawing_area->time_lapse_green[i] = 255 - (((gdouble) i * (drawing_area->time_lapse_length / 9.0)) * 255.0);
+    }
   }
 
   drawing_area->time_lapse_blue = (guint *) malloc(drawing_area->time_lapse_length * sizeof(guint));
   
   for(i = 0; i < drawing_area->time_lapse_length; i++){
-    drawing_area->time_lapse_blue[i] = 255;
+    if(i < 1.0 * drawing_area->time_lapse_length / 3.0){
+      drawing_area->time_lapse_blue[i] = 255 - (((gdouble) i * (drawing_area->time_lapse_length / 3.0)) * 255.0);
+    }else if(i < 2.0 * drawing_area->time_lapse_length / 3.0){
+      drawing_area->time_lapse_blue[i] = 0;
+    }else{
+      drawing_area->time_lapse_blue[i] = 255;
+    }
   }
 
   drawing_area->time_lapse_alpha = (guint *) malloc(drawing_area->time_lapse_length * sizeof(guint));

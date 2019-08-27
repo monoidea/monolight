@@ -199,19 +199,37 @@ monolight_rgb_matrix_init(MonolightRGBMatrix *rgb_matrix)
   rgb_matrix->time_lapse_red = (guint *) malloc(rgb_matrix->time_lapse_length * sizeof(guint));
   
   for(i = 0; i < rgb_matrix->time_lapse_length; i++){
-    rgb_matrix->time_lapse_red[i] = 255;
+    if(i < 1.0 * rgb_matrix->time_lapse_length / 3.0){
+      rgb_matrix->time_lapse_red[i] = 255;
+    }else if(i < 2.0 * rgb_matrix->time_lapse_length / 3.0){
+      rgb_matrix->time_lapse_red[i] = 255 - (((gdouble) i * (rgb_matrix->time_lapse_length / 6.0)) * 255.0);
+    }else{
+      rgb_matrix->time_lapse_red[i] = 0;
+    }
   }
 
   rgb_matrix->time_lapse_green = (guint *) malloc(rgb_matrix->time_lapse_length * sizeof(guint));
   
   for(i = 0; i < rgb_matrix->time_lapse_length; i++){
-    rgb_matrix->time_lapse_green[i] = 255;
+    if(i < 1.0 * rgb_matrix->time_lapse_length / 3.0){
+      rgb_matrix->time_lapse_green[i] = 0;
+    }else if(i < 2.0 * rgb_matrix->time_lapse_length / 3.0){
+      rgb_matrix->time_lapse_green[i] = 255;
+    }else{
+      rgb_matrix->time_lapse_green[i] = 255 - (((gdouble) i * (rgb_matrix->time_lapse_length / 9.0)) * 255.0);
+    }
   }
 
   rgb_matrix->time_lapse_blue = (guint *) malloc(rgb_matrix->time_lapse_length * sizeof(guint));
   
   for(i = 0; i < rgb_matrix->time_lapse_length; i++){
-    rgb_matrix->time_lapse_blue[i] = 255;
+    if(i < 1.0 * rgb_matrix->time_lapse_length / 3.0){
+      rgb_matrix->time_lapse_blue[i] = 255 - (((gdouble) i * (rgb_matrix->time_lapse_length / 3.0)) * 255.0);
+    }else if(i < 2.0 * rgb_matrix->time_lapse_length / 3.0){
+      rgb_matrix->time_lapse_blue[i] = 0;
+    }else{
+      rgb_matrix->time_lapse_blue[i] = 255;
+    }
   }
 
   rgb_matrix->time_lapse_alpha = (guint *) malloc(rgb_matrix->time_lapse_length * sizeof(guint));

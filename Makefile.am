@@ -77,8 +77,8 @@ libmonolight_ui_h_sources = \
 	monolight/ui/monolight_config_dialog.h \
 	monolight/ui/monolight_server_config.h \
 	monolight/ui/monolight_drawing_area.h \
-	monolight/ui/monolight_rgb_matrix.h \
 	monolight/ui/monolight_animation_util.h
+#	monolight/ui/monolight_rgb_matrix.h 
 
 deprecated_libmonolight_ui_c_sources =
 
@@ -89,8 +89,8 @@ libmonolight_ui_c_sources = \
 	monolight/ui/monolight_config_dialog.c \
 	monolight/ui/monolight_server_config.c \
 	monolight/ui/monolight_drawing_area.c \
-	monolight/ui/monolight_rgb_matrix.c \
 	monolight/ui/monolight_animation_util.c
+#	monolight/ui/monolight_rgb_matrix.c 
 
 # monolight_test all files
 monolight_testheaders = \
