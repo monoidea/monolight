@@ -145,7 +145,7 @@ monolight_window_init(MonolightWindow *window)
   /* magnitude buffer queue draw */
   window->flags |= MONOLIGHT_WINDOW_DRAW_MAGNITUDE_BUFFER;
 
-  g_timeout_add(1000 / 60, (GSourceFunc) monolight_window_magnitude_buffer_queue_draw_timeout, (gpointer) window);
+  g_timeout_add(1000 / 30, (GSourceFunc) monolight_window_magnitude_buffer_queue_draw_timeout, (gpointer) window);
 }
 
 void
@@ -245,6 +245,7 @@ monolight_window_magnitude_buffer_queue_draw_timeout(GtkWidget *widget)
 	    ags_osc_buffer_util_get_string(current_packet + offset,
 					   &path, &path_length);
 
+	    /* /AgsSoundProvider/AgsAudio[?] */
 	    audio_channel = 0;
 	    sscanf(path + 29,
 		   "/AgsInput[%u]/AgsAnalyseChannel[0]/AgsPort[\"./magnitude-buffer[0]\"]:value",
