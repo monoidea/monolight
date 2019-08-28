@@ -616,9 +616,15 @@ monolight_rgb_matrix_render_led(MonolightRGBMatrix *rgb_matrix)
 							  stride,
 							  x * rgb_matrix->cols + j, y * rgb_matrix->rows + i);
 
-	led_canvas_set_pixel(rgb_matrix->offscreen_canvas,
-			     n * rgb_matrix->cols + j, m * rgb_matrix->rows + i,
-			     ((pixel >> 16) & 0xff), ((pixel >> 8) & 0xff), (pixel & 0xff));
+	if(straight_direction){
+	  led_canvas_set_pixel(rgb_matrix->offscreen_canvas,
+			       n * rgb_matrix->cols + j, m * rgb_matrix->rows + i,
+			       ((pixel >> 16) & 0xff), ((pixel >> 8) & 0xff), (pixel & 0xff));
+	}else{
+	  led_canvas_set_pixel(rgb_matrix->offscreen_canvas,
+			       n * rgb_matrix->cols + (rgb_matrix->cols - j - 1), m * rgb_matrix->rows + (rgb_matrix->rows - i - 1),
+			       ((pixel >> 16) & 0xff), ((pixel >> 8) & 0xff), (pixel & 0xff));
+	}
       }
     }
 
@@ -647,9 +653,11 @@ monolight_rgb_matrix_render_led(MonolightRGBMatrix *rgb_matrix)
 	x = 0;
 	y++;
       }
-    }
-    
+    }    
   }
+
+  led_matrix_swap_on_vsync(rgb_matrix->led_matrix,
+			   rgb_matrix->offscreen_canvas);
 }
 
 gboolean
