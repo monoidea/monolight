@@ -642,7 +642,7 @@ monolight_rgb_matrix_render_led(MonolightRGBMatrix *rgb_matrix)
       if((x - 1) * rgb_matrix->cols > 0){
 	x--;
       }else{
-	straight_direction = FALSE;
+	straight_direction = TRUE;
 
 	x = 0;
 	y++;
