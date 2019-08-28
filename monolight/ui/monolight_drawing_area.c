@@ -190,45 +190,48 @@ monolight_drawing_area_init(MonolightDrawingArea *drawing_area)
   }
 
   /* colors */
-  drawing_area->time_lapse_red = (guint *) malloc(drawing_area->time_lapse_length * sizeof(guint));
+  drawing_area->color_position = 0;
+  drawing_area->time_lapse_color_length = 60;
+
+  drawing_area->time_lapse_red = (guint *) malloc(drawing_area->time_lapse_color_length * sizeof(guint));
   
-  for(i = 0; i < drawing_area->time_lapse_length; i++){
-    if(i < 1.0 * drawing_area->time_lapse_length / 3.0){
+  for(i = 0; i < drawing_area->time_lapse_color_length; i++){
+    if(i < 1.0 * drawing_area->time_lapse_color_length / 3.0){
       drawing_area->time_lapse_red[i] = 255;
-    }else if(i < 2.0 * drawing_area->time_lapse_length / 3.0){
+    }else if(i < 2.0 * drawing_area->time_lapse_color_length / 3.0){
+      drawing_area->time_lapse_red[i] = 255 - (((gdouble) i * ((gdouble) drawing_area->time_lapse_color_length / 6.0)) * 255.0);
+    }else{
       drawing_area->time_lapse_red[i] = 0;
-    }else{
-      drawing_area->time_lapse_red[i] = 255 - (((gdouble) i * ((gdouble) drawing_area->time_lapse_length / 6.0)) * 255.0);
     }
   }
 
-  drawing_area->time_lapse_green = (guint *) malloc(drawing_area->time_lapse_length * sizeof(guint));
+  drawing_area->time_lapse_green = (guint *) malloc(drawing_area->time_lapse_color_length * sizeof(guint));
   
-  for(i = 0; i < drawing_area->time_lapse_length; i++){
-    if(i < 1.0 * drawing_area->time_lapse_length / 3.0){
-      drawing_area->time_lapse_green[i] = 255 - (((gdouble) i * ((gdouble) drawing_area->time_lapse_length / 9.0)) * 255.0);
-    }else if(i < 2.0 * drawing_area->time_lapse_length / 3.0){
+  for(i = 0; i < drawing_area->time_lapse_color_length; i++){
+    if(i < 1.0 * drawing_area->time_lapse_color_length / 3.0){
       drawing_area->time_lapse_green[i] = 0;
-    }else{
+    }else if(i < 2.0 * drawing_area->time_lapse_color_length / 3.0){
       drawing_area->time_lapse_green[i] = 255;
-    }
-  }
-
-  drawing_area->time_lapse_blue = (guint *) malloc(drawing_area->time_lapse_length * sizeof(guint));
-  
-  for(i = 0; i < drawing_area->time_lapse_length; i++){
-    if(i < 1.0 * drawing_area->time_lapse_length / 3.0){
-      drawing_area->time_lapse_blue[i] = 255 - (((gdouble) i * ((gdouble) drawing_area->time_lapse_length / 3.0)) * 255.0);
-    }else if(i < 2.0 * drawing_area->time_lapse_length / 3.0){
-      drawing_area->time_lapse_blue[i] = 255;
     }else{
-      drawing_area->time_lapse_blue[i] = 255 - (((gdouble) i * ((gdouble) drawing_area->time_lapse_length / 3.0)) * 255.0);
+      drawing_area->time_lapse_green[i] = 255 - (((gdouble) i * ((gdouble) drawing_area->time_lapse_color_length / 9.0)) * 255.0);
     }
   }
 
-  drawing_area->time_lapse_alpha = (guint *) malloc(drawing_area->time_lapse_length * sizeof(guint));
+  drawing_area->time_lapse_blue = (guint *) malloc(drawing_area->time_lapse_color_length * sizeof(guint));
   
-  for(i = 0; i < drawing_area->time_lapse_length; i++){
+  for(i = 0; i < drawing_area->time_lapse_color_length; i++){
+    if(i < 1.0 * drawing_area->time_lapse_color_length / 3.0){
+      drawing_area->time_lapse_blue[i] = 255 - (((gdouble) i * ((gdouble) drawing_area->time_lapse_color_length / 3.0)) * 255.0);
+    }else if(i < 2.0 * drawing_area->time_lapse_color_length / 3.0){
+      drawing_area->time_lapse_blue[i] = 0;
+    }else{
+      drawing_area->time_lapse_blue[i] = 255;
+    }
+  }
+
+  drawing_area->time_lapse_alpha = (guint *) malloc(drawing_area->time_lapse_color_length * sizeof(guint));
+  
+  for(i = 0; i < drawing_area->time_lapse_color_length; i++){
     drawing_area->time_lapse_alpha[i] = 255;
   }
 }
@@ -474,10 +477,10 @@ monolight_drawing_area_render_magnitude(MonolightDrawingArea *drawing_area,
 	   drawing_area->time_lapse_end_angle[drawing_area->position]);
       }
       
-      red = drawing_area->time_lapse_red[drawing_area->current_period];
-      green = drawing_area->time_lapse_green[drawing_area->current_period];
-      blue = drawing_area->time_lapse_blue[drawing_area->current_period];
-      alpha = drawing_area->time_lapse_alpha[drawing_area->current_period];
+      red = drawing_area->time_lapse_red[drawing_area->color_position];
+      green = drawing_area->time_lapse_green[drawing_area->color_position];
+      blue = drawing_area->time_lapse_blue[drawing_area->color_position];
+      alpha = drawing_area->time_lapse_alpha[drawing_area->color_position];
       
       monolight_drawing_area_delegate_render(drawing_area,
 					     cr,
@@ -501,7 +504,7 @@ monolight_drawing_area_render_magnitude(MonolightDrawingArea *drawing_area,
     
     drawing_area->current_period = 0;
   }
-  
+    
   if(drawing_area->position >= drawing_area->time_lapse_length){
     drawing_area->position = 0;
 
@@ -510,6 +513,12 @@ monolight_drawing_area_render_magnitude(MonolightDrawingArea *drawing_area,
     }else{
       drawing_area->inverse_angle = TRUE;
     }
+  }
+
+  drawing_area->color_position += 1;
+  
+  if(drawing_area->color_position >= drawing_area->time_lapse_color_length){
+    drawing_area->color_position = 0;
   }
 
   cairo_pop_group_to_source(cr);

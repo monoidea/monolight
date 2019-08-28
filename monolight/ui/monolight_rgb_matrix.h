@@ -112,6 +112,9 @@ struct _MonolightRGBMatrix
 
   gdouble *time_lapse_scale;
 
+  gint color_position;
+  gint time_lapse_color_length;
+
   guint *time_lapse_red;
   guint *time_lapse_green;
   guint *time_lapse_blue;
