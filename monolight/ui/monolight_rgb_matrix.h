@@ -105,6 +105,8 @@ struct _MonolightRGBMatrix
   gint *time_lapse_period;
   gint *time_lapse_program;
   
+  gboolean inverse_angle;
+  
   gdouble *time_lapse_start_angle;
   gdouble *time_lapse_end_angle;
 

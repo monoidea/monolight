@@ -169,16 +169,18 @@ monolight_drawing_area_init(MonolightDrawingArea *drawing_area)
   }
 
   /* angle and scale */
+  drawing_area->inverse_angle = FALSE;
+  
   drawing_area->time_lapse_start_angle = (gdouble *) malloc(drawing_area->time_lapse_length * sizeof(gdouble));
   
   for(i = 0; i < drawing_area->time_lapse_length; i++){
-    drawing_area->time_lapse_start_angle[i] = 0.0;
+    drawing_area->time_lapse_start_angle[i] = -1.0 * M_PI;
   }
   
   drawing_area->time_lapse_end_angle = (gdouble *) malloc(drawing_area->time_lapse_length * sizeof(gdouble));
   
   for(i = 0; i < drawing_area->time_lapse_length; i++){
-    drawing_area->time_lapse_end_angle[i] = 2 * M_PI;
+    drawing_area->time_lapse_end_angle[i] = M_PI;
   }
 
   drawing_area->time_lapse_scale = (gdouble *) malloc(drawing_area->time_lapse_length * sizeof(gdouble));
@@ -194,9 +196,9 @@ monolight_drawing_area_init(MonolightDrawingArea *drawing_area)
     if(i < 1.0 * drawing_area->time_lapse_length / 3.0){
       drawing_area->time_lapse_red[i] = 255;
     }else if(i < 2.0 * drawing_area->time_lapse_length / 3.0){
-      drawing_area->time_lapse_red[i] = 255 - (((gdouble) i * (drawing_area->time_lapse_length / 6.0)) * 255.0);
-    }else{
       drawing_area->time_lapse_red[i] = 0;
+    }else{
+      drawing_area->time_lapse_red[i] = 255 - (((gdouble) i * ((gdouble) drawing_area->time_lapse_length / 6.0)) * 255.0);
     }
   }
 
@@ -204,11 +206,11 @@ monolight_drawing_area_init(MonolightDrawingArea *drawing_area)
   
   for(i = 0; i < drawing_area->time_lapse_length; i++){
     if(i < 1.0 * drawing_area->time_lapse_length / 3.0){
-      drawing_area->time_lapse_green[i] = 0;
+      drawing_area->time_lapse_green[i] = 255 - (((gdouble) i * ((gdouble) drawing_area->time_lapse_length / 9.0)) * 255.0);
     }else if(i < 2.0 * drawing_area->time_lapse_length / 3.0){
-      drawing_area->time_lapse_green[i] = 255;
+      drawing_area->time_lapse_green[i] = 0;
     }else{
-      drawing_area->time_lapse_green[i] = 255 - (((gdouble) i * (drawing_area->time_lapse_length / 9.0)) * 255.0);
+      drawing_area->time_lapse_green[i] = 255;
     }
   }
 
@@ -216,11 +218,11 @@ monolight_drawing_area_init(MonolightDrawingArea *drawing_area)
   
   for(i = 0; i < drawing_area->time_lapse_length; i++){
     if(i < 1.0 * drawing_area->time_lapse_length / 3.0){
-      drawing_area->time_lapse_blue[i] = 255 - (((gdouble) i * (drawing_area->time_lapse_length / 3.0)) * 255.0);
+      drawing_area->time_lapse_blue[i] = 255 - (((gdouble) i * ((gdouble) drawing_area->time_lapse_length / 3.0)) * 255.0);
     }else if(i < 2.0 * drawing_area->time_lapse_length / 3.0){
-      drawing_area->time_lapse_blue[i] = 0;
-    }else{
       drawing_area->time_lapse_blue[i] = 255;
+    }else{
+      drawing_area->time_lapse_blue[i] = 255 - (((gdouble) i * ((gdouble) drawing_area->time_lapse_length / 3.0)) * 255.0);
     }
   }
 
@@ -436,10 +438,10 @@ monolight_drawing_area_render_magnitude(MonolightDrawingArea *drawing_area,
   if(cr == NULL){
     return;
   }
-  
-  cairo_push_group(cr);
 
   /* clear with background color */
+  cairo_push_group(cr);
+
   cairo_set_source_rgba(cr,
 			0.0,
 			0.0,
@@ -452,6 +454,7 @@ monolight_drawing_area_render_magnitude(MonolightDrawingArea *drawing_area,
   
   cairo_fill(cr);
 
+  /*  */
   for(i = 0; i < drawing_area->program_count; i++){  
     if(((0x1 << i) & drawing_area->time_lapse_program[drawing_area->position]) != 0){
       guint buffer_start, buffer_end;
@@ -460,15 +463,21 @@ monolight_drawing_area_render_magnitude(MonolightDrawingArea *drawing_area,
 
       buffer_start = i * (buffer_size / (2 * drawing_area->program_count));
       buffer_end = (i + 1) * (buffer_size / (2 * drawing_area->program_count));
-      
-      angle = drawing_area->time_lapse_start_angle[drawing_area->position] +
-	((drawing_area->current_period / drawing_area->time_lapse_period[drawing_area->position]) *
-	 (drawing_area->time_lapse_end_angle[drawing_area->position] - drawing_area->time_lapse_start_angle[drawing_area->position]));
 
-      red = drawing_area->time_lapse_red[drawing_area->position];
-      green = drawing_area->time_lapse_green[drawing_area->position];
-      blue = drawing_area->time_lapse_blue[drawing_area->position];
-      alpha = drawing_area->time_lapse_alpha[drawing_area->position];
+      if(!drawing_area->inverse_angle){
+	angle = drawing_area->time_lapse_start_angle[drawing_area->position] +
+	  (((gdouble) drawing_area->current_period / (gdouble) drawing_area->time_lapse_period[drawing_area->position]) *
+	   drawing_area->time_lapse_end_angle[drawing_area->position]);
+      }else{
+	angle = drawing_area->time_lapse_start_angle[drawing_area->position] -
+	  (((gdouble) drawing_area->current_period / (gdouble) drawing_area->time_lapse_period[drawing_area->position]) *
+	   drawing_area->time_lapse_end_angle[drawing_area->position]);
+      }
+      
+      red = drawing_area->time_lapse_red[drawing_area->current_period];
+      green = drawing_area->time_lapse_green[drawing_area->current_period];
+      blue = drawing_area->time_lapse_blue[drawing_area->current_period];
+      alpha = drawing_area->time_lapse_alpha[drawing_area->current_period];
       
       monolight_drawing_area_delegate_render(drawing_area,
 					     cr,
@@ -495,6 +504,12 @@ monolight_drawing_area_render_magnitude(MonolightDrawingArea *drawing_area,
   
   if(drawing_area->position >= drawing_area->time_lapse_length){
     drawing_area->position = 0;
+
+    if(drawing_area->inverse_angle){
+      drawing_area->inverse_angle = FALSE;
+    }else{
+      drawing_area->inverse_angle = TRUE;
+    }
   }
 
   cairo_pop_group_to_source(cr);

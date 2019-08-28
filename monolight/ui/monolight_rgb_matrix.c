@@ -177,6 +177,8 @@ monolight_rgb_matrix_init(MonolightRGBMatrix *rgb_matrix)
   }
 
   /* angle and scale */
+  rgb_matrix->inverse_angle = FALSE;
+
   rgb_matrix->time_lapse_start_angle = (gdouble *) malloc(rgb_matrix->time_lapse_length * sizeof(gdouble));
   
   for(i = 0; i < rgb_matrix->time_lapse_length; i++){
@@ -202,9 +204,9 @@ monolight_rgb_matrix_init(MonolightRGBMatrix *rgb_matrix)
     if(i < 1.0 * rgb_matrix->time_lapse_length / 3.0){
       rgb_matrix->time_lapse_red[i] = 255;
     }else if(i < 2.0 * rgb_matrix->time_lapse_length / 3.0){
-      rgb_matrix->time_lapse_red[i] = 255 - (((gdouble) i * (rgb_matrix->time_lapse_length / 6.0)) * 255.0);
-    }else{
       rgb_matrix->time_lapse_red[i] = 0;
+    }else{
+      rgb_matrix->time_lapse_red[i] = 255 - (((gdouble) i * ((gdouble) rgb_matrix->time_lapse_length / 6.0)) * 255.0);
     }
   }
 
@@ -214,9 +216,9 @@ monolight_rgb_matrix_init(MonolightRGBMatrix *rgb_matrix)
     if(i < 1.0 * rgb_matrix->time_lapse_length / 3.0){
       rgb_matrix->time_lapse_green[i] = 0;
     }else if(i < 2.0 * rgb_matrix->time_lapse_length / 3.0){
-      rgb_matrix->time_lapse_green[i] = 255;
+      rgb_matrix->time_lapse_green[i] = 255 - (((gdouble) i * ((gdouble) rgb_matrix->time_lapse_length / 9.0)) * 255.0);
     }else{
-      rgb_matrix->time_lapse_green[i] = 255 - (((gdouble) i * (rgb_matrix->time_lapse_length / 9.0)) * 255.0);
+      rgb_matrix->time_lapse_green[i] = 255;
     }
   }
 
@@ -224,11 +226,11 @@ monolight_rgb_matrix_init(MonolightRGBMatrix *rgb_matrix)
   
   for(i = 0; i < rgb_matrix->time_lapse_length; i++){
     if(i < 1.0 * rgb_matrix->time_lapse_length / 3.0){
-      rgb_matrix->time_lapse_blue[i] = 255 - (((gdouble) i * (rgb_matrix->time_lapse_length / 3.0)) * 255.0);
+      rgb_matrix->time_lapse_blue[i] = 255 - (((gdouble) i * ((gdouble) rgb_matrix->time_lapse_length / 3.0)) * 255.0);
     }else if(i < 2.0 * rgb_matrix->time_lapse_length / 3.0){
-      rgb_matrix->time_lapse_blue[i] = 0;
-    }else{
       rgb_matrix->time_lapse_blue[i] = 255;
+    }else{
+      rgb_matrix->time_lapse_blue[i] = 255 - (((gdouble) i * ((gdouble) rgb_matrix->time_lapse_length / 3.0)) * 255.0);
     }
   }
 
@@ -467,9 +469,15 @@ monolight_rgb_matrix_render_magnitude(MonolightRGBMatrix *rgb_matrix,
       buffer_start = i * (buffer_size / (2 * rgb_matrix->program_count));
       buffer_end = (i + 1) * (buffer_size / (2 * rgb_matrix->program_count));
       
-      angle = rgb_matrix->time_lapse_start_angle[rgb_matrix->position] +
-	((rgb_matrix->current_period / rgb_matrix->time_lapse_period[rgb_matrix->position]) *
-	 (rgb_matrix->time_lapse_end_angle[rgb_matrix->position] - rgb_matrix->time_lapse_start_angle[rgb_matrix->position]));
+      if(!rgb_matrix->inverse_angle){
+	angle = rgb_matrix->time_lapse_start_angle[rgb_matrix->position] +
+	  (((gdouble) rgb_matrix->current_period / (gdouble) rgb_matrix->time_lapse_period[rgb_matrix->position]) *
+	   rgb_matrix->time_lapse_end_angle[rgb_matrix->position]);
+      }else{
+	angle = rgb_matrix->time_lapse_start_angle[rgb_matrix->position] -
+	  (((gdouble) rgb_matrix->current_period / (gdouble) rgb_matrix->time_lapse_period[rgb_matrix->position]) *
+	   rgb_matrix->time_lapse_end_angle[rgb_matrix->position]);
+      }
 
       red = rgb_matrix->time_lapse_red[rgb_matrix->position];
       green = rgb_matrix->time_lapse_green[rgb_matrix->position];
@@ -501,6 +509,12 @@ monolight_rgb_matrix_render_magnitude(MonolightRGBMatrix *rgb_matrix,
   
   if(rgb_matrix->position >= rgb_matrix->time_lapse_length){
     rgb_matrix->position = 0;
+
+    if(rgb_matrix->inverse_angle){
+      rgb_matrix->inverse_angle = FALSE;
+    }else{
+      rgb_matrix->inverse_angle = TRUE;
+    }
   }
 
   cairo_pop_group_to_source(cr);
