@@ -92,7 +92,7 @@ struct _MonolightRGBMatrix
 
   AgsOscClient *osc_client;
 
-  cairo_t *cr;
+  cairo_surface_t *image_surface;
 
   gchar **program;
   guint program_count;
@@ -140,6 +140,8 @@ void monolight_rgb_matrix_render_magnitude(MonolightRGBMatrix *rgb_matrix,
 					   guint samplerate,
 					   guint buffer_size,
 					   gdouble *magnitude_buffer);
+
+void monolight_rgb_matrix_render_led(MonolightRGBMatrix *rgb_matrix);
 
 gboolean monolight_rgb_matrix_magnitude_buffer_queue_draw_timeout(GObject *gobject);
 

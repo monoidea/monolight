@@ -143,9 +143,9 @@ monolight_rgb_matrix_init(MonolightRGBMatrix *rgb_matrix)
                            (AGS_OSC_CLIENT_INET4 |
                             AGS_OSC_CLIENT_TCP));
 
-  rgb_matrix->cr = cairo_image_surface_create(CAIRO_FORMAT_RGB24,
-					      rgb_matrix->width,
-					      rgb_matrix->height);
+  rgb_matrix->image_surrface = cairo_image_surface_create(CAIRO_FORMAT_RGB24,
+							  rgb_matrix->width,
+							  rgb_matrix->height);
 
   
   rgb_matrix->program = (gchar **) malloc(5 * sizeof(gchar *));
@@ -207,9 +207,9 @@ monolight_rgb_matrix_init(MonolightRGBMatrix *rgb_matrix)
     if(i < 1.0 * rgb_matrix->time_lapse_color_length / 3.0){
       rgb_matrix->time_lapse_red[i] = 255;
     }else if(i < 2.0 * rgb_matrix->time_lapse_color_length / 3.0){
-      rgb_matrix->time_lapse_red[i] = 0;
-    }else{
       rgb_matrix->time_lapse_red[i] = 255 - (((gdouble) i * ((gdouble) rgb_matrix->time_lapse_color_length / 6.0)) * 255.0);
+    }else{
+      rgb_matrix->time_lapse_red[i] = 0;
     }
   }
 
@@ -219,9 +219,9 @@ monolight_rgb_matrix_init(MonolightRGBMatrix *rgb_matrix)
     if(i < 1.0 * rgb_matrix->time_lapse_color_length / 3.0){
       rgb_matrix->time_lapse_green[i] = 0;
     }else if(i < 2.0 * rgb_matrix->time_lapse_color_length / 3.0){
-      rgb_matrix->time_lapse_green[i] = 255 - (((gdouble) i * ((gdouble) rgb_matrix->time_lapse_color_length / 9.0)) * 255.0);
-    }else{
       rgb_matrix->time_lapse_green[i] = 255;
+    }else{
+      rgb_matrix->time_lapse_green[i] = 255 - (((gdouble) i * ((gdouble) rgb_matrix->time_lapse_color_length / 9.0)) * 255.0);
     }
   }
 
@@ -231,9 +231,9 @@ monolight_rgb_matrix_init(MonolightRGBMatrix *rgb_matrix)
     if(i < 1.0 * rgb_matrix->time_lapse_color_length / 3.0){
       rgb_matrix->time_lapse_blue[i] = 255 - (((gdouble) i * ((gdouble) rgb_matrix->time_lapse_color_length / 3.0)) * 255.0);
     }else if(i < 2.0 * rgb_matrix->time_lapse_color_length / 3.0){
-      rgb_matrix->time_lapse_blue[i] = 255;
+      rgb_matrix->time_lapse_blue[i] = 0;
     }else{
-      rgb_matrix->time_lapse_blue[i] = 255 - (((gdouble) i * ((gdouble) rgb_matrix->time_lapse_color_length / 3.0)) * 255.0);
+      rgb_matrix->time_lapse_blue[i] = 255;
     }
   }
 
@@ -268,7 +268,7 @@ monolight_rgb_matrix_finalize(GObject *gobject)
     g_object_unref(rgb_matrix->osc_client);
   }
 
-  cairo_surface_destroy(rgb_matrix->cr);
+  cairo_surface_destroy(rgb_matrix->image_surface);
   
   /* call parent */
   G_OBJECT_CLASS(monolight_rgb_matrix_parent_class)->finalize(gobject);
@@ -331,7 +331,9 @@ monolight_rgb_matrix_start(MonolightRGBMatrix *rgb_matrix)
     return;
   }
 
-  //TODO:JK: implement me
+  monolight_rgb_matrix_create(rgb_matrix);
+
+  rgb_matrix->flags |= MONOLIGHT_RGB_MATRIX_RUNNING;
 }
 
 void
@@ -341,7 +343,9 @@ monolight_rgb_matrix_stop(MonolightRGBMatrix *rgb_matrix)
     return;
   }
 
-  //TODO:JK: implement me
+  rgb_matrix->flags &= (~MONOLIGHT_RGB_MATRIX_RUNNING);
+
+  monolight_rgb_matrix_delete(rgb_matrix);  
 }
 
 void
@@ -442,7 +446,7 @@ monolight_rgb_matrix_render_magnitude(MonolightRGBMatrix *rgb_matrix,
     return;
   }
 
-  cr = rgb_matrix->cr;
+  cr = cairo_create(rgb_matrix->image_surface);
   
   if(cr == NULL){
     return;
@@ -528,6 +532,124 @@ monolight_rgb_matrix_render_magnitude(MonolightRGBMatrix *rgb_matrix,
 
   cairo_pop_group_to_source(cr);
   cairo_paint(cr);
+}
+
+void
+monolight_rgb_matrix_render_led(MonolightRGBMatrix *rgb_matrix)
+{  
+  unsigned char *data;
+
+  int stride;
+  gboolean straight_direction;
+  guint x, y;
+  guint m, n,
+  guint i, j;
+
+  auto guint32 monolight_rgb_matrix_render_led_get_pixel(unsigned char *data,
+							 guint x, guint y);
+  
+  guint32 monolight_rgb_matrix_render_led_get_pixel(unsigned char *data,
+						    guint stride,
+						    guint x, guint y)
+  {
+    guint32 pixel;
+    
+    int bpp = 4;
+    unsigned char *p = data + y * stride + x * bpp;
+
+    switch(bpp) {
+    case 1:
+    {
+      pixel = p[0];
+    }
+    break;
+    case 2:
+    {
+      pixel = (p[0]) | (p[1] << 8);
+    }
+    break;
+    case 3:
+    {
+      pixel = (p[0]) | (p[1] << 8) | (p[2] << 16);
+    }
+    break;
+    case 4:
+    {
+      pixel = (p[0]) | (p[1] << 8) | (p[2] << 16) | (p[3] << 24);
+    }
+    break;
+    }
+
+    return(pixel);
+  }
+
+  if(!MONOLIGHT_IS_RGB_MATRIX(rgb_matrix)){
+    return;
+  }
+
+  data = cairo_image_surface_get_data(rgb_matrix->image_surface);
+  
+  if(data == NULL){
+    return;
+  }
+
+#if 0
+  led_canvas_clear(rgb_matrix->offscreen_canvas);
+#endif
+  
+  stride = cairo_image_surface_get_stride(rgb_matrix->image_surface);
+  
+  x = 0;
+  y = 0;
+
+  m = 0;
+  n = 0;
+  
+  straight_direction = TRUE;
+  
+  while(m < rgb_matrix->parallel){
+    for(i = 0; i < rgb_matrix->rows; i++){
+      for(j = 0; j < rgb_matrix->cols; j++){
+	guint32 pixel;
+
+	pixel = monolight_rgb_matrix_render_led_get_pixel(data,
+							  stride,
+							  x * rgb_matrix->cols + j, y * rgb_matrix->rows + i);
+
+	led_canvas_set_pixel(rgb_matrix->offscreen_canvas,
+			     n * rgb_matrix->cols + j, m * rgb_matrix->rows + i,
+			     ((pixel >> 16) & 0xff), ((pixel >> 8) & 0xff), (pixel & 0xff));
+      }
+    }
+
+    if(n + 1 < rgb_matrix->chain_length){
+      n++;
+    }else{
+      m++;
+      
+      n = 0;
+    }
+    
+    if(straight_direction){
+      if((x + 1) * rgb_matrix->cols < rgb_matrix->width){
+	x++;
+      }else{
+	straight_direction = FALSE;
+
+	y++;
+      }
+    }else{
+      if((x - 1) * rgb_matrix->cols > 0){
+	x--;
+      }else{
+	straight_direction = FALSE;
+
+	x = 0;
+	y++;
+      }
+    }
+    
+  }
 }
 
 gboolean
@@ -636,6 +758,8 @@ monolight_rgb_matrix_magnitude_buffer_queue_draw_timeout(GObject *gobject)
 						rgb_matrix->buffer_size,
 						rgb_matrix->magnitude_buffer[i]);
 	}
+	
+	monolight_rgb_matrix_render_led(rgb_matrix);
       }
     }
     
