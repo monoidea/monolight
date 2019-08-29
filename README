@@ -20,3 +20,17 @@
 Comments are welcome.
 
 	- Joël Krähemann <jkraehemann@gmail.com>
+
+Install
+====
+
+Monolight uses common build system of automake. To compile and install
+run:
+
+./configure --prefix=/usr
+make
+make install
+
+To enable systemd service, execute:
+
+systemctl enable monolight.service

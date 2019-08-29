@@ -106,6 +106,9 @@ monolight_ledheaders = \
 monolight_led_c_sources = \
 	monolight/monolight_main.c
 
+install-service:
+	install -c -p -m 644 $(top_builddir)/monothek.etc/systemd/system/monolight.service $(etcdir)/systemd/system/monolight.service
+
 gen-marshallers:
 	glib-genmarshal --prefix=monolight_cclosure_marshal --header monolight/object/monolight_marshallers.list > monolight/object/monolight_marshal.h
 	glib-genmarshal --prefix=monolight_cclosure_marshal --body monolight/object/monolight_marshallers.list > monolight/object/monolight_marshal.c
