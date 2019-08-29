@@ -195,7 +195,7 @@ monolight_menu_bar_disconnect_callback(GtkWidget *widget, MonolightMenuBar *menu
 
   guint buffer_length;
 
-  static const unsigned char *disable_peak_message = "/meter\x00\x00,sF\x00/AgsSoundProvider/AgsAudio[\"spectrometer\"]/AgsInput[0-1]/AgsAnalyseChannel[0]/AgsPort[\"./magnitude-buffer[0]\"]:value\x00\x00\x00";
+  static const unsigned char *disable_peak_message = "/meter\x00\x00,sF\x00/AgsSoundProvider/AgsAudio[\"monothek-mixer\"]/AgsInput[0-1]/AgsAnalyseChannel[0]/AgsPort[\"./magnitude-buffer[0]\"]:value\x00\x00";
 
   static const guint disable_peak_message_size = 132;
 

@@ -58,6 +58,7 @@ typedef struct _MonolightRGBMatrixClass MonolightRGBMatrixClass;
 typedef enum{
   MONOLIGHT_RGB_MATRIX_RUNNING                = 1,
   MONOLIGHT_RGB_MATRIX_DRAW_MAGNITUDE_BUFFER  = 1 <<  1,
+  MONOLIGHT_RGB_MATRIX_MONITORING             = 1 <<  2,
 }MonolightRGBMatrixFlags;
 
 struct _MonolightRGBMatrix

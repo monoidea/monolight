@@ -20,30 +20,48 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include <gdk/gdk.h>
-#include <pango/pangocairo.h>
-
-#include <gtk/gtk.h>
-
 #define _GNU_SOURCE
 #include <locale.h>
 
 #include <monolight/monolight_main.h>
 
+#include <stdio.h>
+#include <signal.h>
+#include <unistd.h>
+
 #include "config.h"
+
+void sig_handler(int signo)
+{
+  if(signo == SIGKILL){
+    g_main_loop_quit();
+  }
+}
 
 int
 main(int argc, char **argv)
 {
+  MonolightRGBMatrix *rgb_matrix;
+
+  GMainLoop *main_loop;
+  
   putenv("TZ=UTC");
   
   setlocale(LC_ALL, "");
   bindtextdomain(PACKAGE, LOCALEDIR);
   textdomain(PACKAGE);
 
-  gtk_init(&argc, &argv);
+  signal(SIGKILL, sig_handler);
+  
+  main_loop = g_main_loop_new(NULL,
+			      TRUE);
 
-  //TODO:JK: implement me
+  rgb_matrix = monolight_rgb_matrix_new();
+  monolight_rgb_matrix_start(rgb_matrix);
+
+  g_main_loop_run();
+
+  monolight_rgb_matrix_stop(rgb_matrix);
   
   return(0);
 }

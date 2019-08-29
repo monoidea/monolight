@@ -339,13 +339,60 @@ monolight_rgb_matrix_start(MonolightRGBMatrix *rgb_matrix)
 void
 monolight_rgb_matrix_stop(MonolightRGBMatrix *rgb_matrix)
 {
+  unsigned char *buffer;
+  unsigned char *packet;
+
+  guint buffer_length;
+  guint i;
+  gboolean success;
+  
+  static const unsigned char *disable_peak_message = "/meter\x00\x00,sF\x00/AgsSoundProvider/AgsAudio[\"monothek-mixer\"]/AgsInput[0-1]/AgsAnalyseChannel[0]/AgsPort[\"./magnitude-buffer[0]\"]:value\x00\x00";
+
+  static const guint disable_peak_message_size = 132;
+
   if(!MONOLIGHT_IS_RGB_MATRIX(rgb_matrix)){
     return;
   }
 
   rgb_matrix->flags &= (~MONOLIGHT_RGB_MATRIX_RUNNING);
 
-  monolight_rgb_matrix_delete(rgb_matrix);  
+  /* disable meter */
+  packet = (unsigned char *) malloc((4 + disable_peak_message_size) * sizeof(unsigned char));
+
+  ags_osc_buffer_util_put_int32(packet,
+                                disable_peak_message_size);
+
+  memcpy(packet + 4, disable_peak_message, (disable_peak_message_size) * sizeof(unsigned char));
+
+  buffer = ags_osc_util_slip_encode(packet,
+				    4 + disable_peak_message_size,
+				    &buffer_length);
+
+  success = FALSE;
+
+  for(i = 0; i < 3 && !success; i++){
+    success = ags_osc_client_write_bytes(window->osc_client,
+					 buffer, buffer_length);
+
+    if(!success){
+      usleep(4000);
+    }
+  }
+  
+  /* close fd */
+  if(window->osc_client->ip4_fd != -1){
+    close(window->osc_client->ip4_fd);
+     
+    window->osc_client->ip4_fd = -1;
+  }
+   
+  if(window->osc_client->ip6_fd != -1){
+    close(window->osc_client->ip6_fd);
+    
+    window->osc_client->ip6_fd = -1;
+  }
+  
+  monolight_rgb_matrix_delete(rgb_matrix);
 }
 
 void
@@ -583,7 +630,9 @@ monolight_rgb_matrix_render_led(MonolightRGBMatrix *rgb_matrix)
     return(pixel);
   }
 
-  if(!MONOLIGHT_IS_RGB_MATRIX(rgb_matrix)){
+  if(!MONOLIGHT_IS_RGB_MATRIX(rgb_matrix) ||
+     rgb_matrix->led_matrix == NULL ||
+     rgb_matrix->offscreen_canvas == NULL){
     return;
   }
 
@@ -682,9 +731,57 @@ monolight_rgb_matrix_magnitude_buffer_queue_draw_timeout(GObject *gobject)
       ip6_fd = rgb_matrix->osc_client->ip6_fd;
 
       pthread_mutex_unlock(osc_client_mutex);
+
+      if(ip4_fd == -1 &&
+	 ip6_fd == -1){        
+	ags_osc_client_connect(rgb_matrix->osc_client);
+
+	pthread_mutex_lock(osc_client_mutex);
     
-      if(ip4_fd != -1 ||
-	 ip6_fd != -1){      
+	ip4_fd = rgb_matrix->osc_client->ip4_fd;
+	ip6_fd = rgb_matrix->osc_client->ip6_fd;
+
+	pthread_mutex_unlock(osc_client_mutex);
+
+	g_message("monolight rgb matrix - connect");
+      }
+
+      if((MONOLIGHT_RGB_MATRIX_MONITORING & (rgb_matrix->flags)) == 0 &&
+	 (ip4_fd != -1 ||
+	  ip6_fd != -1)){
+	unsigned char *buffer;
+	unsigned char *packet;
+
+	guint buffer_length;
+	gboolean success;
+  
+	static const unsigned char *enable_peak_message = "/meter\x00\x00,sT\x00/AgsSoundProvider/AgsAudio[\"monothek-mixer\"]/AgsInput[0-1]/AgsAnalyseChannel[0]/AgsPort[\"./magnitude-buffer[0]\"]:value\x00\x00";
+
+	static const guint enable_peak_message_size = 132;
+
+	/* enable meter */
+	packet = (unsigned char *) malloc((4 + enable_peak_message_size) * sizeof(unsigned char));
+
+	ags_osc_buffer_util_put_int32(packet,
+				      enable_peak_message_size);
+
+	memcpy(packet + 4, enable_peak_message, (enable_peak_message_size) * sizeof(unsigned char));
+
+	buffer = ags_osc_util_slip_encode(packet,
+					  4 + enable_peak_message_size,
+					  &buffer_length);
+   
+	success = ags_osc_client_write_bytes(rgb_matrix->osc_client,
+					     buffer, buffer_length);
+
+	if(success){
+	  rgb_matrix->flags |= MONOLIGHT_RGB_MATRIX_MONITORING;
+
+	  g_message("monolight rgb matrix - start monitoring");
+	}
+      }
+      
+      if((MONOLIGHT_RGB_MATRIX_MONITORING & (rgb_matrix->flags)) != 0){
 	unsigned char *current_data;
 	unsigned char *current_packet;
 	gchar *address_pattern;
